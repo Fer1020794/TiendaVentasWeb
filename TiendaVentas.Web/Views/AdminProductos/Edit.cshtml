@@ -1,0 +1,112 @@
+﻿@model TiendaVentas.Web.Models.ProductoFormViewModel
+@using TiendaVentas.Web.Models
+
+@{
+    ViewData["Title"] = "Editar Producto";
+    var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
+}
+
+<div class="container py-4 mb-5">
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold mb-1">Editar Producto</h1>
+            <p class="text-muted mb-0">Actualiza información, disponibilidad e imagen.</p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" form="formProductoEdit" class="btn btn-dark rounded-pill px-4">
+                Guardar cambios
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow rounded-4 mb-5">
+        <div class="card-body p-4">
+            <form id="formProductoEdit" asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input asp-for="Id_Producto" type="hidden" />
+                <input asp-for="Imagen_Url" type="hidden" />
+
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nombre" class="form-label">Nombre del producto</label>
+                        <input asp-for="Nombre" class="form-control rounded-4" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Id_Categoria" class="form-label">Categoría</label>
+                        <select asp-for="Id_Categoria" class="form-select rounded-4">
+                            <option value="">Seleccione una categoría</option>
+                            @foreach (var cat in categorias)
+                            {
+                                <option value="@cat.Id_Categoria">@cat.Nombre</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Id_Categoria" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Descripcion" class="form-label">Descripción</label>
+                        <textarea asp-for="Descripcion" rows="3" class="form-control rounded-4"></textarea>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Precio" class="form-label">Precio</label>
+                        <input asp-for="Precio" class="form-control rounded-4" />
+                        <span asp-validation-for="Precio" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Stock" class="form-label">Disponibilidad</label>
+                        <select asp-for="Stock" class="form-select rounded-4">
+                            <option value="1">Disponible</option>
+                            <option value="0">Agotado</option>
+                        </select>
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Estado" class="form-label">Estado</label>
+                        <select asp-for="Estado" class="form-select rounded-4">
+                            <option value="A">Activo</option>
+                            <option value="I">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-7">
+                        <label asp-for="ImagenFile" class="form-label">Reemplazar imagen</label>
+                        <input asp-for="ImagenFile" type="file" class="form-control rounded-4" accept="image/*" />
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label">Imagen actual</label>
+                        <div>
+                            <img src="@(string.IsNullOrWhiteSpace(Model.Imagen_Url) ? "/images/no-image.png" : Model.Imagen_Url)"
+                                 alt="Imagen actual"
+                                 style="width:90px; height:90px; object-fit:cover; border-radius:14px;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2 flex-wrap">
+                    <button type="submit" class="btn btn-dark rounded-pill px-4">
+                        Guardar cambios
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

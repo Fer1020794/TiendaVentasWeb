@@ -1,0 +1,90 @@
+﻿@model List<TiendaVentas.Web.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Administrar Categorías";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="fw-bold mb-1">Panel de Categorías</h1>
+            <p class="text-muted mb-0">Administra las categorías del catálogo.</p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-controller="AdminProductos" asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+                Productos
+            </a>
+
+            <a asp-action="Create" class="btn btn-dark rounded-pill">
+                Nueva categoría
+            </a>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card border-0 shadow rounded-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th class="text-end pe-4">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">@item.Id_Categoria</td>
+                                    <td class="fw-semibold">@item.Nombre</td>
+                                    <td>@item.Descripcion</td>
+                                    <td>
+                                        @if (item.Estado == "A")
+                                        {
+                                            <span class="badge bg-success">Activa</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactiva</span>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                            <a asp-action="Edit"
+                                                   asp-route-id="@item.Id_Categoria"
+                                                   class="btn btn-sm btn-outline-primary rounded-pill">
+                                                Editar
+                                            </a>
+
+                                            @if (item.Estado == "A")
+                                            {
+                                                <form asp-action="Desactivar" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@item.Id_Categoria" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                                                        Desactivar
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning rounded-4 text-center">
+            No hay categorías registradas.
+        </div>
+    }
+</div>

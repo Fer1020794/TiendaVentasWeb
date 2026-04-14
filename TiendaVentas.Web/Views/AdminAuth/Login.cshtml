@@ -1,0 +1,45 @@
+﻿@model TiendaVentas.Web.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login Administrador";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow rounded-4">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <img src="~/images/logo-mc-nails.jpg" alt="MC Nails" style="width:90px; height:90px; object-fit:contain; border-radius:50%;" />
+                        <h2 class="fw-bold mt-3">Panel Administrativo</h2>
+                        <p class="text-muted mb-0">Ingresa con tu cuenta autorizada</p>
+                    </div>
+
+                    <form asp-action="Login" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Correo" class="form-label">Correo</label>
+                            <input asp-for="Correo" class="form-control rounded-pill" />
+                            <span asp-validation-for="Correo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Clave" class="form-label">Contraseña</label>
+                            <input asp-for="Clave" type="password" class="form-control rounded-pill" />
+                            <span asp-validation-for="Clave" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 rounded-pill">
+                            Iniciar sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

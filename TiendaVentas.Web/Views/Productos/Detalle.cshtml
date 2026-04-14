@@ -1,0 +1,86 @@
+﻿@model TiendaVentas.Web.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle del Producto";
+
+    var numeroWhatsApp = "50254001440";
+    var mensaje = $"Hola, deseo realizar un pedido.%0AProducto: {Model.Nombre}%0APrecio: Q {Model.Precio:N2}";
+    var urlWhatsApp = $"https://wa.me/{numeroWhatsApp}?text={mensaje}";
+}
+
+<div class="container py-5 mb-5 pb-5">
+    <div class="row g-5 align-items-start">
+
+        <!-- IMAGEN -->
+        <div class="col-md-5">
+            <div class="bg-light rounded-4 overflow-hidden shadow-sm">
+                <img src="@(string.IsNullOrWhiteSpace(Model.Imagen_Url) ? "/images/no-image.png" : Model.Imagen_Url)"
+                     alt="@Model.Nombre"
+                     class="w-100"
+                     style="height: 380px; object-fit: cover;" />
+            </div>
+        </div>
+
+        <!-- DETALLE -->
+        <div class="col-md-7 d-flex flex-column">
+
+            <span class="text-muted">@Model.Categoria</span>
+
+            <h1 class="fw-bold mt-2">@Model.Nombre</h1>
+
+            <p class="text-muted mt-3">
+                @(string.IsNullOrWhiteSpace(Model.Descripcion)
+                    ? "Este producto no cuenta con descripción."
+                    : Model.Descripcion)
+            </p>
+
+            <!-- STOCK -->
+            <div class="mb-3">
+                @if (Model.Stock > 0)
+                {
+                    <div class="text-success fw-semibold">
+                        <i class="bi bi-check-circle-fill"></i> Disponible
+                    </div>
+                }
+                else
+                {
+                    <div class="text-danger fw-semibold">
+                        <i class="bi bi-x-circle-fill"></i> Agotado
+                    </div>
+                }
+            </div>
+
+            <!-- PRECIO -->
+            <h2 class="fw-bold my-4">Q @Model.Precio.ToString("N2")</h2>
+
+            <!-- BOTONES -->
+            <div class="mt-auto pt-3">
+                <div class="d-flex gap-3 flex-wrap">
+
+                    @if (Model.Stock > 0)
+                    {
+                        <form asp-controller="Carrito" asp-action="Agregar" method="post">
+                            <input type="hidden" name="idProducto" value="@Model.Id_Producto" />
+                            <input type="hidden" name="cantidad" value="1" />
+                            <button type="submit" class="btn btn-warning btn-lg rounded-pill px-4 fw-semibold">
+                                Agregar al carrito
+                            </button>
+                        </form>
+
+                        <a href="@urlWhatsApp" target="_blank" class="btn btn-success btn-lg rounded-pill px-4 fw-semibold">
+                            Pedir solo este producto
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-secondary btn-lg rounded-pill px-4" disabled>
+                            Producto agotado
+                        </button>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

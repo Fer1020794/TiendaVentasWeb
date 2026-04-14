@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MC Nails</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TiendaVentas.Web.styles.css" asp-append-version="true" />
+
+    <style>
+            body {
+                background-color: #f8f9fa;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .navbar {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .navbar-brand-custom {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                text-decoration: none;
+            }
+
+            .logo-mc {
+                width: 75px;
+                height: 75px;
+                object-fit: contain;
+                border-radius: 50%;
+                background-color: white;
+                padding: 4px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            }
+
+            .brand-text {
+                display: flex;
+                flex-direction: column;
+                line-height: 1.1;
+            }
+
+            .brand-title {
+                font-size: 1.6rem;
+                font-weight: 800;
+                color: #f57c00;
+                margin: 0;
+            }
+
+            .brand-subtitle {
+                font-size: 0.95rem;
+                color: #888;
+                margin: 0;
+            }
+
+            .nav-link {
+                font-weight: 500;
+                font-size: 1rem;
+            }
+
+            .btn-whatsapp {
+                background-color: #25D366;
+                border: none;
+                color: white;
+                border-radius: 999px;
+                padding: 8px 18px;
+                font-weight: 600;
+            }
+
+                .btn-whatsapp:hover {
+                    background-color: #1ebe5d;
+                    color: white;
+                }
+
+            .main-container {
+                flex: 1;
+            }
+
+            .footer {
+                background-color: #fff;
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+            <div class="container">
+
+                <a class="navbar-brand-custom" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo-mc-nails.jpg" alt="MC Nails" class="logo-mc" />
+                    <div class="brand-text">
+                        <span class="brand-title">MC Nails</span>
+                        <span class="brand-subtitle">Maria Cibeles</span>
+                    </div>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                        aria-controls="navbarMain" aria-expanded="false" aria-label="Alternar navegación">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Inicio</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Productos" asp-action="Index">Productos</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        @if (Context.Session.GetString("ADMIN_LOGUEADO") == "SI")
+                        {
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-semibold text-muted">
+                                    <i class="bi bi-person-circle"></i>
+                                    @Context.Session.GetString("ADMIN_NOMBRE")
+                                </span>
+
+                                <a asp-controller="AdminProductos" asp-action="Index"
+                                       class="btn btn-sm btn-dark rounded-pill">
+                                    Panel
+                                </a>
+
+                                <a asp-controller="AdminAuth" asp-action="Logout"
+                                       class="btn btn-sm btn-outline-danger rounded-pill">
+                                    Salir
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <a asp-controller="AdminAuth" asp-action="Login"
+                                   class="btn btn-outline-secondary rounded-pill d-flex align-items-center gap-2">
+                                <i class="bi bi-shield-lock"></i>
+                                Admin
+                            </a>
+                        }
+
+                        @await Component.InvokeAsync("CarritoResumen")
+
+                        <a href="https://wa.me/50254001440" target="_blank" class="btn btn-whatsapp">
+                            Pedidos por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container py-4 main-container">
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-auto">
+        <div class="container text-center py-3">
+            <p class="mb-1 fw-semibold">&copy; 2026 - MC Nails</p>
+            <small>Tienda en línea de productos para uñas y belleza</small>
+        </div>
+    </footer>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+            <div id="toastSuccess" class="toast align-items-center text-bg-success border-0 shadow-lg rounded-4" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body fw-semibold">
+                        @TempData["Success"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var toastEl = document.getElementById('toastSuccess');
+                if (toastEl) {
+                    var toast = new bootstrap.Toast(toastEl, {
+                        delay: 2500
+                    });
+                    toast.show();
+                }
+            });
+    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,222 @@
+﻿@model TiendaVentas.Web.Models.CarritoViewModel
+
+@{
+    ViewData["Title"] = "Carrito";
+
+    var numeroWhatsApp = "50212345678";
+
+    var mensaje = "Hola, deseo realizar el siguiente pedido:%0A%0A";
+
+    foreach (var item in Model.Items)
+    {
+        mensaje += $"- {item.Nombre} | Cantidad: {item.Cantidad} | Precio: Q {item.Precio:N2} | Subtotal: Q {item.Subtotal:N2}%0A";
+    }
+
+    mensaje += $"%0ATotal: Q {Model.Total:N2}";
+    var urlWhatsApp = $"https://wa.me/{numeroWhatsApp}?text={mensaje}";
+}
+
+<style>
+    .cart-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #222;
+    }
+
+    .cart-subtitle {
+        color: #777;
+    }
+
+    .cart-card {
+        border: 0;
+        border-radius: 24px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+        background: #fff;
+    }
+
+    .cart-product-img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 16px;
+        background: #f8f9fa;
+    }
+
+    .cart-product-name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 4px;
+    }
+
+    .cart-product-category {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .cart-price {
+        font-weight: 700;
+        color: #111;
+    }
+
+    .cart-summary-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #222;
+    }
+
+    .btn-qty {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    .cart-total {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #111;
+    }
+
+    .empty-cart-box {
+        border: 0;
+        border-radius: 24px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+        background: #fff;
+        padding: 50px 30px;
+    }
+
+    .empty-cart-icon {
+        font-size: 3rem;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="cart-title mb-1">Mi Carrito</h1>
+            <p class="cart-subtitle mb-0">Revisa tus productos antes de enviar tu pedido.</p>
+        </div>
+
+        <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">
+            Seguir comprando
+        </a>
+    </div>
+
+    @if (Model.Items.Any())
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+
+                @foreach (var item in Model.Items)
+                {
+                    <div class="cart-card mb-3">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center g-3">
+
+                                <div class="col-md-2 text-center">
+                                    <img src="@(string.IsNullOrWhiteSpace(item.Imagen_Url) ? "/images/no-image.png" : item.Imagen_Url)"
+                                         alt="@item.Nombre"
+                                         class="cart-product-img" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="cart-product-name">@item.Nombre</div>
+                                    <div class="cart-product-category">@item.Categoria</div>
+                                </div>
+
+                                <div class="col-md-2 text-center">
+                                    <div class="cart-price">Q @item.Precio.ToString("N2")</div>
+                                </div>
+
+                                <div class="col-md-2 text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+
+                                        <form asp-controller="Carrito" asp-action="Disminuir" method="post">
+                                            <input type="hidden" name="idProducto" value="@item.Id_Producto" />
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm btn-qty">-</button>
+                                        </form>
+
+                                        <span class="fw-bold">@item.Cantidad</span>
+
+                                        <form asp-controller="Carrito" asp-action="Incrementar" method="post">
+                                            <input type="hidden" name="idProducto" value="@item.Id_Producto" />
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm btn-qty">+</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 text-center">
+                                    <div class="fw-bold mb-2">Q @item.Subtotal.ToString("N2")</div>
+
+                                    <form asp-controller="Carrito" asp-action="Eliminar" method="post">
+                                        <input type="hidden" name="idProducto" value="@item.Id_Producto" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="cart-card">
+                    <div class="card-body p-4">
+                        <h4 class="cart-summary-title mb-4">Resumen del pedido</h4>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Total de productos</span>
+                            <span>@Model.TotalItems</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Artículos diferentes</span>
+                            <span>@Model.Items.Count</span>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fw-semibold">Total a pagar</span>
+                            <span class="cart-total">Q @Model.Total.ToString("N2")</span>
+                        </div>
+
+                        <a asp-controller="Pedido" asp-action="Checkout" class="btn btn-success w-100 rounded-pill py-2 mb-2 fw-semibold">
+                            Generar pedido formal
+                        </a>
+
+                        <form asp-controller="Carrito" asp-action="Vaciar" method="post">
+                            <button type="submit" class="btn btn-outline-danger w-100 rounded-pill py-2">
+                                Vaciar carrito
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-cart-box text-center">
+            <div class="empty-cart-icon mb-3">🛒</div>
+            <h3 class="fw-bold mb-2">Tu carrito está vacío</h3>
+            <p class="text-muted mb-4">Agrega productos para comenzar tu pedido.</p>
+
+            <a asp-controller="Productos" asp-action="Index" class="btn btn-dark rounded-pill px-4">
+                Ir a productos
+            </a>
+        </div>
+    }
+
+</div>
