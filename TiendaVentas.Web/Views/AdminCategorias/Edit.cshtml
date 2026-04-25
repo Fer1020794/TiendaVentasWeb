@@ -2,13 +2,14 @@
 
 @{
     ViewData["Title"] = "Editar Categoría";
+    var imagenActual = string.IsNullOrWhiteSpace(Model.Imagen_Url) ? "/images/no-image.png" : Model.Imagen_Url;
 }
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h1 class="fw-bold mb-1">Editar Categoría</h1>
-            <p class="text-muted mb-0">Actualiza la información de la categoría.</p>
+            <p class="text-muted mb-0">Actualiza la información e imagen de la categoría.</p>
         </div>
 
         <a asp-action="Index" class="btn btn-outline-dark rounded-pill">
@@ -18,29 +19,62 @@
 
     <div class="card border-0 shadow rounded-4">
         <div class="card-body p-4">
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 <input asp-for="Id_Categoria" type="hidden" />
+                <input asp-for="Imagen_Url" type="hidden" />
 
                 <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="Nombre" class="form-label">Nombre</label>
-                        <input asp-for="Nombre" class="form-control rounded-4" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Nombre" class="form-label">Nombre</label>
+                                <input asp-for="Nombre" class="form-control rounded-4" />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Estado" class="form-label">Estado</label>
+                                <select asp-for="Estado" class="form-select rounded-4">
+                                    <option value="A">Activa</option>
+                                    <option value="I">Inactiva</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Descripcion" class="form-label">Descripción</label>
+                                <textarea asp-for="Descripcion" rows="4" class="form-control rounded-4"></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Cambiar imagen de categoría</label>
+                                <input type="file"
+                                       name="imagen"
+                                       id="imagenCategoria"
+                                       class="form-control rounded-4"
+                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                                <small class="text-muted">
+                                    Si no seleccionas una nueva imagen, se conservará la imagen actual.
+                                </small>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <label asp-for="Estado" class="form-label">Estado</label>
-                        <select asp-for="Estado" class="form-select rounded-4">
-                            <option value="A">Activa</option>
-                            <option value="I">Inactiva</option>
-                        </select>
-                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">Vista previa</label>
+                        <div class="border rounded-4 p-3 bg-light text-center">
+                            <img id="previewCategoria"
+                                 src="@imagenActual"
+                                 alt="@Model.Nombre"
+                                 class="img-fluid rounded-4 shadow-sm"
+                                 style="height:220px; width:100%; object-fit:cover;" />
 
-                    <div class="col-12">
-                        <label asp-for="Descripcion" class="form-label">Descripción</label>
-                        <textarea asp-for="Descripcion" rows="4" class="form-control rounded-4"></textarea>
+                            <div class="mt-3 text-muted small">
+                                Imagen actual guardada para esta categoría.
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -60,4 +94,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("imagenCategoria")?.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById("previewCategoria");
+
+            if (!file) {
+                preview.src = "@imagenActual";
+                return;
+            }
+
+            preview.src = URL.createObjectURL(file);
+        });
+    </script>
 }

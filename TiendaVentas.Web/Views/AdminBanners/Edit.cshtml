@@ -1,0 +1,68 @@
+﻿@model TiendaVentas.Web.Models.Banner
+
+@{
+    ViewData["Title"] = "Editar Banner";
+}
+
+<div class="container py-4">
+    <h1 class="fw-bold mb-3">Editar Banner</h1>
+
+    <div class="card shadow rounded-4 border-0">
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                <input asp-for="Id_Banner" type="hidden" />
+
+                <div class="mb-3">
+                    <label class="form-label">Título</label>
+                    <input asp-for="Titulo" class="form-control rounded-3" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Subtítulo</label>
+                    <input asp-for="Subtitulo" class="form-control rounded-3" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Imagen actual</label><br />
+                    <img src="@Model.Imagen_Url"
+                         style="width:200px; border-radius:10px;" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Cambiar imagen</label>
+                    <input type="file" name="imagen" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Texto botón</label>
+                    <input asp-for="Boton_Texto" class="form-control rounded-3" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">URL botón</label>
+                    <input asp-for="Boton_Url" class="form-control rounded-3" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Orden</label>
+                    <input asp-for="Orden" class="form-control rounded-3" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Estado" class="form-select rounded-3">
+                        <option value="A">Activo</option>
+                        <option value="I">Inactivo</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-dark rounded-pill px-4">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Cancelar</a>
+
+            </form>
+
+        </div>
+    </div>
+</div>

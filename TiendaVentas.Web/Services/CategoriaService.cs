@@ -16,25 +16,27 @@ namespace TiendaVentas.Web.Services
         public async Task<List<Categoria>> ObtenerCategoriasAsync()
         {
             const string sql = @"
-        ;WITH CategoriasUnicas AS
-        (
-            SELECT
-                ID_CATEGORIA,
-                NOMBRE,
-                DESCRIPCION,
-                ESTADO,
-                ROW_NUMBER() OVER (PARTITION BY NOMBRE ORDER BY ID_CATEGORIA) AS RN
-            FROM CATEGORIAS
-            WHERE ESTADO = 'A'
-        )
-        SELECT
-            ID_CATEGORIA AS Id_Categoria,
-            NOMBRE AS Nombre,
-            DESCRIPCION AS Descripcion,
-            ESTADO AS Estado
-        FROM CategoriasUnicas
-        WHERE RN = 1
-        ORDER BY NOMBRE;";
+                ;WITH CategoriasUnicas AS
+                (
+                    SELECT
+                        ID_CATEGORIA,
+                        NOMBRE,
+                        DESCRIPCION,
+                        ESTADO,
+                        IMAGEN_URL,
+                        ROW_NUMBER() OVER (PARTITION BY NOMBRE ORDER BY ID_CATEGORIA) AS RN
+                    FROM CATEGORIAS
+                    WHERE ESTADO = 'A'
+                )
+                SELECT
+                    ID_CATEGORIA AS Id_Categoria,
+                    NOMBRE AS Nombre,
+                    DESCRIPCION AS Descripcion,
+                    ESTADO AS Estado,
+                    IMAGEN_URL AS Imagen_Url
+                FROM CategoriasUnicas
+                WHERE RN = 1
+                ORDER BY NOMBRE;";
 
             using var connection = new SqlConnection(_connectionString);
             var resultado = await connection.QueryAsync<Categoria>(sql);
@@ -48,9 +50,10 @@ namespace TiendaVentas.Web.Services
                     ID_CATEGORIA AS Id_Categoria,
                     NOMBRE AS Nombre,
                     DESCRIPCION AS Descripcion,
-                    ESTADO AS Estado
+                    ESTADO AS Estado,
+                    IMAGEN_URL AS Imagen_Url
                 FROM CATEGORIAS
-                ORDER BY ID_CATEGORIA DESC";
+                ORDER BY ID_CATEGORIA DESC;";
 
             using var connection = new SqlConnection(_connectionString);
             var resultado = await connection.QueryAsync<Categoria>(sql);
@@ -64,9 +67,10 @@ namespace TiendaVentas.Web.Services
                     ID_CATEGORIA AS Id_Categoria,
                     NOMBRE AS Nombre,
                     DESCRIPCION AS Descripcion,
-                    ESTADO AS Estado
+                    ESTADO AS Estado,
+                    IMAGEN_URL AS Imagen_Url
                 FROM CATEGORIAS
-                WHERE ID_CATEGORIA = @Id";
+                WHERE ID_CATEGORIA = @Id;";
 
             using var connection = new SqlConnection(_connectionString);
             return await connection.QueryFirstOrDefaultAsync<Categoria>(sql, new { Id = id });
@@ -75,8 +79,20 @@ namespace TiendaVentas.Web.Services
         public async Task CrearAsync(Categoria model)
         {
             const string sql = @"
-                INSERT INTO CATEGORIAS (NOMBRE, DESCRIPCION, ESTADO)
-                VALUES (@Nombre, @Descripcion, @Estado)";
+                INSERT INTO CATEGORIAS 
+                (
+                    NOMBRE, 
+                    DESCRIPCION, 
+                    ESTADO,
+                    IMAGEN_URL
+                )
+                VALUES 
+                (
+                    @Nombre, 
+                    @Descripcion, 
+                    @Estado,
+                    @Imagen_Url
+                );";
 
             using var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, model);
@@ -88,8 +104,9 @@ namespace TiendaVentas.Web.Services
                 UPDATE CATEGORIAS
                 SET NOMBRE = @Nombre,
                     DESCRIPCION = @Descripcion,
-                    ESTADO = @Estado
-                WHERE ID_CATEGORIA = @Id_Categoria";
+                    ESTADO = @Estado,
+                    IMAGEN_URL = @Imagen_Url
+                WHERE ID_CATEGORIA = @Id_Categoria;";
 
             using var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, model);
@@ -100,7 +117,7 @@ namespace TiendaVentas.Web.Services
             const string sql = @"
                 UPDATE CATEGORIAS
                 SET ESTADO = 'I'
-                WHERE ID_CATEGORIA = @Id";
+                WHERE ID_CATEGORIA = @Id;";
 
             using var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, new { Id = id });

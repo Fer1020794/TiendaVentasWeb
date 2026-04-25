@@ -13,9 +13,9 @@ namespace TiendaVentas.Web.Services
             _connectionString = configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
         }
 
-        public async Task<List<Producto>> ObtenerProductosAsync(int? idCategoria = null)
+        public async Task<List<Producto>> ObtenerProductosAsync(int? idCategoria = null, string? texto = null)
         {
-            var sql = @"
+            const string sql = @"
                 SELECT
                     P.ID_PRODUCTO  AS Id_Producto,
                     P.ID_CATEGORIA AS Id_Categoria,
@@ -28,20 +28,22 @@ namespace TiendaVentas.Web.Services
                     C.NOMBRE       AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
-                WHERE P.ESTADO = 'A'";
-
-            if (idCategoria.HasValue && idCategoria.Value > 0)
-            {
-                sql += " AND P.ID_CATEGORIA = @IdCategoria";
-            }
-
-            sql += " ORDER BY P.ID_PRODUCTO DESC";
+                WHERE P.ESTADO = 'A'
+                  AND (@IdCategoria IS NULL OR @IdCategoria <= 0 OR P.ID_CATEGORIA = @IdCategoria)
+                  AND (
+                        @Texto IS NULL OR @Texto = ''
+                        OR P.NOMBRE LIKE '%' + @Texto + '%'
+                        OR P.DESCRIPCION LIKE '%' + @Texto + '%'
+                        OR C.NOMBRE LIKE '%' + @Texto + '%'
+                      )
+                ORDER BY P.ID_PRODUCTO DESC;";
 
             using var connection = new SqlConnection(_connectionString);
 
             var resultado = await connection.QueryAsync<Producto>(sql, new
             {
-                IdCategoria = idCategoria
+                IdCategoria = idCategoria,
+                Texto = texto?.Trim()
             });
 
             return resultado.ToList();
@@ -63,7 +65,7 @@ namespace TiendaVentas.Web.Services
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
                 WHERE P.ESTADO = 'A'
-                ORDER BY P.ID_PRODUCTO DESC";
+                ORDER BY P.ID_PRODUCTO DESC;";
 
             using var connection = new SqlConnection(_connectionString);
 
@@ -90,7 +92,7 @@ namespace TiendaVentas.Web.Services
                     C.NOMBRE       AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
-                WHERE P.ID_PRODUCTO = @Id";
+                WHERE P.ID_PRODUCTO = @Id;";
 
             using var connection = new SqlConnection(_connectionString);
             return await connection.QueryFirstOrDefaultAsync<Producto>(sql, new { Id = id });
@@ -111,7 +113,7 @@ namespace TiendaVentas.Web.Services
                     C.NOMBRE       AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
-                ORDER BY P.ID_PRODUCTO DESC";
+                ORDER BY P.ID_PRODUCTO DESC;";
 
             using var connection = new SqlConnection(_connectionString);
             var resultado = await connection.QueryAsync<Producto>(sql);
@@ -142,7 +144,7 @@ namespace TiendaVentas.Web.Services
                     @Imagen_Url,
                     @Estado,
                     GETDATE()
-                )";
+                );";
 
             using var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, model);
@@ -159,7 +161,7 @@ namespace TiendaVentas.Web.Services
                     STOCK = @Stock,
                     IMAGEN_URL = @Imagen_Url,
                     ESTADO = @Estado
-                WHERE ID_PRODUCTO = @Id_Producto";
+                WHERE ID_PRODUCTO = @Id_Producto;";
 
             using var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, model);
@@ -170,7 +172,7 @@ namespace TiendaVentas.Web.Services
             const string sql = @"
                 UPDATE PRODUCTOS
                 SET ESTADO = 'I'
-                WHERE ID_PRODUCTO = @Id";
+                WHERE ID_PRODUCTO = @Id;";
 
             using var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, new { Id = id });

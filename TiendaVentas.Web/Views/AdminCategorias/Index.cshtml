@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h1 class="fw-bold mb-1">Panel de Categorías</h1>
-            <p class="text-muted mb-0">Administra las categorías del catálogo.</p>
+            <p class="text-muted mb-0">Administra las categorías del catálogo y sus imágenes.</p>
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
@@ -30,7 +30,8 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4">ID</th>
+                                <th class="ps-4">Imagen</th>
+                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
@@ -40,10 +41,33 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
+                                var imagen = string.IsNullOrWhiteSpace(item.Imagen_Url)
+                                    ? "/images/no-image.png"
+                                    : item.Imagen_Url;
+
                                 <tr>
-                                    <td class="ps-4">@item.Id_Categoria</td>
+                                    <td class="ps-4" style="width:110px;">
+                                        <img src="@imagen"
+                                             alt="@item.Nombre"
+                                             class="rounded-4 shadow-sm"
+                                             style="width:82px; height:62px; object-fit:cover;" />
+                                    </td>
+
+                                    <td>@item.Id_Categoria</td>
+
                                     <td class="fw-semibold">@item.Nombre</td>
-                                    <td>@item.Descripcion</td>
+
+                                    <td>
+                                        @if (string.IsNullOrWhiteSpace(item.Descripcion))
+                                        {
+                                            <span class="text-muted">Sin descripción</span>
+                                        }
+                                        else
+                                        {
+                                            @item.Descripcion
+                                        }
+                                    </td>
+
                                     <td>
                                         @if (item.Estado == "A")
                                         {
@@ -54,6 +78,7 @@
                                             <span class="badge bg-secondary">Inactiva</span>
                                         }
                                     </td>
+
                                     <td class="text-end pe-4">
                                         <div class="d-flex justify-content-end gap-2 flex-wrap">
                                             <a asp-action="Edit"

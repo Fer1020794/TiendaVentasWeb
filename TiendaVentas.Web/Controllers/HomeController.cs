@@ -8,27 +8,28 @@ namespace TiendaVentas.Web.Controllers
     {
         private readonly CategoriaService _categoriaService;
         private readonly ProductoService _productoService;
+        private readonly BannerService _bannerService;
 
-        public HomeController(CategoriaService categoriaService, ProductoService productoService)
+        public HomeController(
+            CategoriaService categoriaService,
+            ProductoService productoService,
+            BannerService bannerService)
         {
             _categoriaService = categoriaService;
             _productoService = productoService;
+            _bannerService = bannerService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var vm = new HomeViewModel
+            var model = new HomeViewModel
             {
                 Categorias = await _categoriaService.ObtenerCategoriasAsync(),
-                ProductosDestacados = await _productoService.ObtenerProductosDestacadosAsync(8)
+                ProductosDestacados = await _productoService.ObtenerProductosDestacadosAsync(),
+                Banners = await _bannerService.ObtenerActivosAsync()
             };
 
-            return View(vm);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            return View(model);
         }
     }
 }

@@ -4,365 +4,169 @@
     ViewData["Title"] = "Inicio";
 }
 
-<style>
-    .hero-mc {
-        background: linear-gradient(135deg, #fff4ea 0%, #ffffff 55%, #fff8f1 100%);
-        border-radius: 28px;
-        padding: 60px 40px;
-        overflow: hidden;
-        position: relative;
-    }
-
-        .hero-mc::before {
-            content: "";
-            position: absolute;
-            right: -40px;
-            top: -40px;
-            width: 180px;
-            height: 180px;
-            background: rgba(245, 124, 0, 0.08);
-            border-radius: 50%;
-        }
-
-        .hero-mc::after {
-            content: "";
-            position: absolute;
-            left: -30px;
-            bottom: -30px;
-            width: 120px;
-            height: 120px;
-            background: rgba(245, 124, 0, 0.06);
-            border-radius: 50%;
-        }
-
-    .hero-title {
-        font-size: 3rem;
-        font-weight: 800;
-        color: #f57c00;
-        line-height: 1.1;
-    }
-
-    .hero-text {
-        font-size: 1.08rem;
-        color: #666;
-        max-width: 560px;
-    }
-
-    .hero-logo {
-        max-height: 320px;
-        width: 100%;
-        object-fit: contain;
-        filter: drop-shadow(0 8px 18px rgba(0,0,0,0.12));
-    }
-
-    .section-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #222;
-    }
-
-    .section-subtitle {
-        color: #777;
-    }
-
-    .category-card {
-        border: 0;
-        border-radius: 22px;
-        background: #fff;
-        box-shadow: 0 8px 22px rgba(0,0,0,0.06);
-        transition: all 0.20s ease-in-out;
-        height: 100%;
-    }
-
-        .category-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.10);
-        }
-
-    .category-icon {
-        width: 58px;
-        height: 58px;
-        border-radius: 50%;
-        background: #fff4ea;
-        color: #f57c00;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        margin: 0 auto 14px auto;
-        font-weight: 700;
-    }
-
-    .product-card {
-        border: 0;
-        border-radius: 24px;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-        transition: all 0.20s ease-in-out;
-        background: #fff;
-        height: 100%;
-    }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.10);
-        }
-
-    .product-img {
-        height: 220px;
-        object-fit: cover;
-        width: 100%;
-        background: #f8f9fa;
-    }
-
-    .product-category {
-        color: #999;
-        font-size: 0.88rem;
-    }
-
-    .product-name {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #222;
-    }
-
-    .product-price {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: #111;
-    }
-
-    .mc-btn-main {
-        background-color: #f57c00;
-        border: none;
-        color: white;
-        border-radius: 999px;
-        padding: 12px 26px;
-        font-weight: 700;
-    }
-
-        .mc-btn-main:hover {
-            background-color: #df6f00;
-            color: white;
-        }
-
-    .mc-btn-outline {
-        border-radius: 999px;
-        padding: 12px 26px;
-        font-weight: 700;
-    }
-
-    .mini-banner {
-        border-radius: 24px;
-        background: #fff;
-        box-shadow: 0 8px 22px rgba(0,0,0,0.06);
-        padding: 28px;
-    }
-
-    .mini-banner-title {
-        color: #f57c00;
-        font-weight: 800;
-        font-size: 1.35rem;
-    }
-</style>
-
 <div class="container py-4 mb-5 pb-5">
 
-    <section class="hero-mc mb-5">
-        <div class="row align-items-center g-4 position-relative" style="z-index:2;">
-            <div class="col-lg-7">
-                <h1 class="hero-title mb-3">Bienvenida a MC Nails</h1>
+    <!-- SLIDER DINÁMICO -->
+    <section class="home-slider-section mb-5">
+        @if (Model.Banners != null && Model.Banners.Any())
+        {
+            <div id="mcNailsSlider"
+                 class="carousel slide carousel-fade"
+                 data-bs-ride="carousel"
+                 data-bs-interval="4500">
 
-                <p class="hero-text mb-4">
-                    Descubre productos para uñas, accesorios, decoración y artículos de belleza
-                    seleccionados para realzar cada detalle de tu trabajo y tu estilo.
-                </p>
+                <!-- INDICADORES -->
+                <div class="carousel-indicators">
+                    @for (int i = 0; i < Model.Banners.Count; i++)
+                    {
+                        <button type="button"
+                                data-bs-target="#mcNailsSlider"
+                                data-bs-slide-to="@i"
+                                class="@(i == 0 ? "active" : "")">
+                        </button>
+                    }
+                </div>
 
-                <div class="d-flex flex-wrap gap-3">
-                    <a asp-controller="Productos" asp-action="Index" class="btn mc-btn-main btn-lg">
-                        Ver catálogo
-                    </a>
+                <!-- SLIDES -->
+                <div class="carousel-inner mc-slider-wrapper rounded-5 shadow-sm">
 
-                    <a href="https://wa.me/50254001440" target="_blank" class="btn btn-success btn-lg rounded-pill px-4">
-                        Pedir por WhatsApp
-                    </a>
+                    @for (int i = 0; i < Model.Banners.Count; i++)
+                    {
+                        var banner = Model.Banners[i];
+
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+
+                            <img src="@banner.Imagen_Url"
+                                 class="d-block w-100 slider-img"
+                                 alt="@banner.Titulo" />
+
+                            @if (!string.IsNullOrWhiteSpace(banner.Titulo) ||
+                                 !string.IsNullOrWhiteSpace(banner.Subtitulo) ||
+                                 !string.IsNullOrWhiteSpace(banner.Boton_Texto))
+                            {
+                                <div class="carousel-caption slider-caption">
+
+                                    @if (!string.IsNullOrWhiteSpace(banner.Titulo))
+                                    {
+                                        <h1>@banner.Titulo</h1>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(banner.Subtitulo))
+                                    {
+                                        <p>@banner.Subtitulo</p>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(banner.Boton_Texto) &&
+                                         !string.IsNullOrWhiteSpace(banner.Boton_Url))
+                                    {
+                                        <div class="d-flex gap-3 flex-wrap">
+                                            <a href="@banner.Boton_Url"
+                                                   class="btn btn-slider-primary">
+                                                @banner.Boton_Texto
+                                            </a>
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+
+                <!-- CONTROLES -->
+                <button class="carousel-control-prev custom-arrow"
+                        type="button"
+                        data-bs-target="#mcNailsSlider"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <button class="carousel-control-next custom-arrow"
+                        type="button"
+                        data-bs-target="#mcNailsSlider"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center rounded-4">
+                No hay banners activos registrados.
+            </div>
+        }
+    </section>
+
+    <!-- MINI INFO -->
+    <section class="mb-5">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="mini-banner text-center">
+                    <div class="mini-banner-title">Productos seleccionados</div>
+                    <p class="text-muted">Encuentra todo más rápido.</p>
                 </div>
             </div>
 
-            <div class="col-lg-5 text-center">
-                <img src="~/images/logo-mc-nails.jpg" alt="MC Nails" class="hero-logo" />
+            <div class="col-md-4">
+                <div class="mini-banner text-center">
+                    <div class="mini-banner-title">Pedidos fáciles</div>
+                    <p class="text-muted">Compra rápido por WhatsApp.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mini-banner text-center">
+                    <div class="mini-banner-title">Estilo MC Nails</div>
+                    <p class="text-muted">Diseño moderno y limpio.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="mb-5">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <div class="mini-banner h-100 text-center">
-                    <div class="mini-banner-title mb-2">Productos seleccionados</div>
-                    <p class="text-muted mb-0">Categorías organizadas para encontrar lo que necesitas más rápido.</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="mini-banner h-100 text-center">
-                    <div class="mini-banner-title mb-2">Pedidos fáciles</div>
-                    <p class="text-muted mb-0">Agrega al carrito y envía tu pedido directo por WhatsApp.</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="mini-banner h-100 text-center">
-                    <div class="mini-banner-title mb-2">Estilo MC Nails</div>
-                    <p class="text-muted mb-0">Una experiencia visual más limpia, moderna y pensada para vender.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <div>
-                <h2 class="section-title mb-1">Comprar por categoría</h2>
-                <p class="section-subtitle mb-0">Explora nuestras líneas de productos.</p>
-            </div>
-
-            <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-dark mc-btn-outline">
-                Ver todo
-            </a>
+    <!-- CATEGORÍAS -->
+    <section class="categories-showcase mb-5">
+        <div class="text-center mb-5">
+            <h2 class="categories-title">CATEGORÍAS</h2>
+            <div class="categories-line"></div>
+            <p class="categories-subtitle">
+                Descubre nuestras líneas de productos y encuentra fácilmente lo que necesitas.
+            </p>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-4 justify-content-center">
             @if (Model.Categorias != null && Model.Categorias.Any())
             {
                 @foreach (var categoria in Model.Categorias)
                 {
-                    <div class="col-6 col-md-4 col-lg-3">
+                    var imagen = string.IsNullOrWhiteSpace(categoria.Imagen_Url)
+                        ? "/images/no-image.png"
+                        : categoria.Imagen_Url;
+
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                         <a asp-controller="Productos"
                                asp-action="Index"
                                asp-route-idCategoria="@categoria.Id_Categoria"
-                               class="text-decoration-none">
-                            <div class="category-card text-center p-4">
-                                <div class="category-icon">
-                                    @categoria.Nombre.Substring(0, 1)
+                               class="category-image-link">
+
+                            <div class="category-image-card">
+
+                                <div class="category-image-box">
+                                    <img src="@imagen"
+                                         alt="@categoria.Nombre"
+                                         class="category-photo" />
                                 </div>
 
-                                <h5 class="text-dark fw-bold mb-1">@categoria.Nombre</h5>
+                                <div class="category-button-name">
+                                    @categoria.Nombre
+                                </div>
 
-                                <p class="text-muted small mb-0">
-                                    @(string.IsNullOrWhiteSpace(categoria.Descripcion) ? "Explorar categoría" : categoria.Descripcion)
-                                </p>
                             </div>
                         </a>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="col-12">
-                    <div class="alert alert-warning rounded-4 text-center">
-                        No hay categorías registradas por el momento.
-                    </div>
-                </div>
-            }
-        </div>
-    </section>
-
-    <section class="mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <div>
-                <h2 class="section-title mb-1">Productos destacados</h2>
-                <p class="section-subtitle mb-0">Algunos de los productos disponibles en MC Nails.</p>
-            </div>
-
-            <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-dark mc-btn-outline">
-                Ver catálogo completo
-            </a>
-        </div>
-
-        <div class="row g-4">
-            @if (Model.ProductosDestacados != null && Model.ProductosDestacados.Any())
-            {
-                @foreach (var item in Model.ProductosDestacados)
-                {
-                    <div class="col-md-6 col-lg-3">
-                        <div class="product-card h-100">
-                            <img src="@(string.IsNullOrWhiteSpace(item.Imagen_Url) ? "/images/no-image.png" : item.Imagen_Url)"
-                                 alt="@item.Nombre"
-                                 class="product-img" />
-
-                            <div class="card-body d-flex flex-column p-4">
-                                <span class="product-category">@item.Categoria</span>
-
-                                <h5 class="product-name mt-2 mb-2">@item.Nombre</h5>
-
-                                <p class="text-muted small mb-3">
-                                    @(string.IsNullOrWhiteSpace(item.Descripcion) ? "Sin descripción disponible." : item.Descripcion)
-                                </p>
-
-                                <div class="mb-3">
-                                    @if (item.Stock > 0)
-                                    {
-                                        <div class="text-success fw-semibold">
-                                            <i class="bi bi-check-circle-fill"></i> Disponible
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="text-danger fw-semibold">
-                                            <i class="bi bi-x-circle-fill"></i> Agotado
-                                        </div>
-                                    }
-                                </div>
-
-                                <div class="mt-auto pt-2">
-                                    <div class="product-price mb-3">Q @item.Precio.ToString("N2")</div>
-
-                                    <div class="d-grid gap-2">
-                                        @if (item.Stock > 0)
-                                        {
-                                            <form asp-controller="Carrito" asp-action="Agregar" method="post">
-                                                <input type="hidden" name="idProducto" value="@item.Id_Producto" />
-                                                <input type="hidden" name="cantidad" value="1" />
-                                                <button type="submit" class="btn btn-warning rounded-pill fw-semibold">
-                                                    Agregar al carrito
-                                                </button>
-                                            </form>
-
-                                            <a asp-controller="Productos"
-                                                   asp-action="Detalle"
-                                                   asp-route-id="@item.Id_Producto"
-                                                   class="btn btn-dark rounded-pill">
-                                                Ver detalle
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <button type="button" class="btn btn-secondary rounded-pill fw-semibold" disabled>
-                                                Agotado
-                                            </button>
-
-                                            <a asp-controller="Productos"
-                                                   asp-action="Detalle"
-                                                   asp-route-id="@item.Id_Producto"
-                                                   class="btn btn-outline-dark rounded-pill">
-                                                Ver detalle
-                                            </a>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="col-12">
-                    <div class="alert alert-info rounded-4 text-center">
-                        Aún no hay productos destacados disponibles.
-                    </div>
-                </div>
             }
         </div>
     </section>

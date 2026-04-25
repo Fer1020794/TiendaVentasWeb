@@ -9,33 +9,622 @@ html {
     }
 }
 
+:root {
+    --mc-orange: #f57c00;
+    --mc-orange-dark: #df6f00;
+    --mc-green: #25d366;
+    --mc-text: #222;
+    --mc-muted: #777;
+    --mc-soft: #f8f9fa;
+    --mc-border: #ececec;
+}
+
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
 .form-control:focus,
 .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(245, 124, 0, 0.25);
 }
 
 body {
-    margin-bottom: 0;
+    margin: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #f8f9fa;
+    color: var(--mc-text);
 }
 
 main {
     flex: 1;
 }
 
-.footer {
+.main-container {
+    flex: 1;
+}
+
+.footer,
+.site-footer {
     position: static !important;
-    bottom: auto !important;
+    margin-top: auto !important;
     width: 100%;
     white-space: normal;
     line-height: normal;
-    margin-top: auto;
+    background-color: #fff;
 }
+
+
+.top-store-header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+}
+
+.logo-mc {
+    width: 82px;
+    height: 82px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.14);
+}
+
+.brand-title {
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--mc-orange);
+    line-height: 1;
+}
+
+.brand-subtitle {
+    font-size: 0.95rem;
+    color: #777;
+}
+
+.mc-search-box {
+    max-width: 760px;
+    width: 100%;
+    border: 2px solid #ff1c1c;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #fff;
+}
+
+    .mc-search-box input {
+        border: none;
+        box-shadow: none !important;
+        padding: 15px 20px;
+    }
+
+    .mc-search-box button {
+        border: none;
+        background: #fff;
+        padding: 0 22px;
+        font-size: 1.45rem;
+    }
+
+.nav-link {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.btn-whatsapp {
+    background-color: #25D366;
+    border: none;
+    color: white;
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-weight: 700;
+}
+
+    .btn-whatsapp:hover {
+        background-color: #1ebe5d;
+        color: white;
+    }
+
+
+
+.mc-cart-widget,
+.cart-summary,
+.carrito-resumen {
+    text-decoration: none;
+    color: #222;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mc-cart-icon {
+    position: relative;
+    font-size: 2.6rem;
+    line-height: 1;
+}
+
+.mc-cart-count {
+    position: absolute;
+    top: -9px;
+    right: -12px;
+    background: red;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    min-width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mc-cart-text {
+    line-height: 1.1;
+}
+
+.mc-cart-title {
+    font-weight: 600;
+}
+
+.mc-cart-total {
+    font-weight: 700;
+}
+
+
+
+.home-slider-section {
+    padding: 2rem 0 3rem;
+}
+
+.mc-slider-wrapper {
+    overflow: hidden;
+    border-radius: 28px !important;
+    background: #fff;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.08);
+}
+
+.slider-img {
+    height: 430px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 28px;
+    transition: transform 0.8s ease, filter 0.8s ease;
+}
+
+.carousel-item.active .slider-img {
+    transform: scale(1.015);
+}
+
+.carousel-item:hover .slider-img {
+    transform: scale(1.035);
+}
+
+.slider-caption {
+    left: 7%;
+    right: auto;
+    bottom: 15%;
+    max-width: 510px;
+    text-align: left;
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+    .slider-caption h1 {
+        color: #fff;
+        font-size: 2.75rem;
+        font-weight: 900;
+        line-height: 1.05;
+        margin-bottom: 0.9rem;
+        text-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    }
+
+    .slider-caption p {
+        color: #fff;
+        font-size: 1.1rem;
+        line-height: 1.55;
+        margin-bottom: 1.35rem;
+        text-shadow: 0 5px 18px rgba(0,0,0,0.45);
+    }
+
+.btn-slider-primary,
+.btn-slider-whatsapp {
+    border-radius: 999px;
+    padding: 0.82rem 1.7rem;
+    font-weight: 800;
+    border: none;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+    transition: all 0.25s ease;
+}
+
+.btn-slider-primary {
+    background: var(--mc-orange);
+    color: #fff;
+}
+
+    .btn-slider-primary:hover {
+        background: var(--mc-orange-dark);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+.btn-slider-whatsapp {
+    background: var(--mc-green);
+    color: #fff;
+}
+
+    .btn-slider-whatsapp:hover {
+        background: #1ebe5d;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    opacity: 1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 42px;
+    height: 42px;
+    background-size: 50%;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.78);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+    transition: all 0.25s ease;
+}
+
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+    background-color: var(--mc-orange);
+    transform: scale(1.08);
+}
+
+.carousel-indicators {
+    bottom: 15px;
+}
+
+    .carousel-indicators [data-bs-target] {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.65);
+        transition: all 0.3s ease;
+        margin: 0 5px;
+        border: none;
+        opacity: 1;
+    }
+
+    .carousel-indicators .active {
+        width: 32px;
+        border-radius: 999px;
+        background: var(--mc-orange);
+    }
+
+
+.mini-banner {
+    border-radius: 22px;
+    padding: 25px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    transition: all 0.25s ease;
+}
+
+    .mini-banner:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+    }
+
+.mini-banner-title {
+    color: var(--mc-orange);
+    font-weight: 800;
+    font-size: 1.3rem;
+}
+
+
+.categories-showcase {
+    padding: 3.5rem 0;
+}
+
+.categories-title {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: #161616;
+    margin-bottom: 0.3rem;
+}
+
+.categories-line {
+    width: 120px;
+    height: 5px;
+    background: var(--mc-orange);
+    border-radius: 999px;
+    margin: 0 auto 1.2rem;
+}
+
+.categories-subtitle {
+    max-width: 760px;
+    margin: 0 auto;
+    color: #555;
+    font-size: 1.08rem;
+}
+
+.category-image-link {
+    display: block;
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.category-image-card {
+    text-align: center;
+    transition: transform 0.25s ease;
+}
+
+    .category-image-card:hover {
+        transform: translateY(-6px);
+    }
+
+.category-image-box {
+    height: 255px;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.category-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s ease, filter 0.55s ease;
+}
+
+.category-image-card:hover .category-photo {
+    transform: scale(1.1);
+    filter: brightness(0.94);
+}
+
+.category-button-name {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 155px;
+    max-width: 95%;
+    margin-top: 1.1rem;
+    padding: 0.85rem 1.45rem;
+    background: var(--mc-orange);
+    color: #fff;
+    font-weight: 800;
+    border-radius: 999px;
+    box-shadow: 0 10px 22px rgba(245,124,0,0.28);
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+}
+
+.category-image-card:hover .category-button-name {
+    background: var(--mc-orange-dark);
+    transform: translateY(-2px);
+}
+
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #222;
+}
+
+.section-subtitle {
+    color: #777;
+}
+
+.product-card {
+    border: 0;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    transition: all 0.20s ease-in-out;
+    background: #fff;
+    height: 100%;
+}
+
+    .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+    }
+
+.product-img {
+    height: 220px;
+    object-fit: cover;
+    width: 100%;
+    background: #f8f9fa;
+}
+
+.product-category {
+    color: var(--mc-orange);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.product-stars {
+    color: #f6c443;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.product-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #111;
+}
+
+.mc-btn-main {
+    background-color: var(--mc-orange);
+    border: none;
+    color: white;
+    border-radius: 999px;
+    padding: 12px 26px;
+    font-weight: 700;
+}
+
+    .mc-btn-main:hover {
+        background-color: var(--mc-orange-dark);
+        color: white;
+    }
+
+.mc-btn-outline {
+    border-radius: 999px;
+    padding: 12px 26px;
+    font-weight: 700;
+}
+
+
+
+.mc-whatsapp-widget {
+    position: fixed;
+    right: 18px;
+    left: auto;
+    bottom: 20px;
+    z-index: 1050;
+    width: 330px;
+    max-width: calc(100vw - 30px);
+}
+
+.mc-whatsapp-box {
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    overflow: hidden;
+}
+
+.mc-whatsapp-header {
+    background: #25D366;
+    color: #fff;
+    padding: 13px 42px 13px 16px;
+    font-weight: 700;
+    position: relative;
+}
+
+.mc-whatsapp-close {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    border: none;
+    background: transparent;
+    color: #0b6b2b;
+    font-size: 1.4rem;
+    font-weight: 900;
+}
+
+.mc-whatsapp-body {
+    background: #f6efe8;
+    padding: 14px;
+}
+
+.mc-whatsapp-message {
+    background: #fff;
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.mc-whatsapp-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #1e9ff2;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    position: relative;
+}
+
+    .mc-whatsapp-avatar::after {
+        content: "\F618";
+        font-family: "bootstrap-icons";
+        position: absolute;
+        right: -2px;
+        bottom: -2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #25D366;
+        color: #fff;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+.mc-whatsapp-small {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.mc-whatsapp-link {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+    .mc-whatsapp-link:hover {
+        color: #fff;
+        background: #1ebe5d;
+    }
+
+
+.social-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+    .social-icon.fb {
+        background: #1877f2;
+    }
+
+    .social-icon.ig {
+        background: linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);
+    }
+
+    .social-icon.tk {
+        background: #000;
+    }
+
+    .social-icon:hover {
+        color: white;
+        transform: scale(1.15);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
 
 .form-floating > .form-control-plaintext::placeholder,
 .form-floating > .form-control::placeholder {
@@ -46,4 +635,133 @@ main {
 .form-floating > .form-control-plaintext:focus::placeholder,
 .form-floating > .form-control:focus::placeholder {
     text-align: start;
+}
+
+
+
+@media (max-width: 991.98px) {
+    .mc-search-box {
+        margin-top: 1rem;
+    }
+
+    .mc-cart-widget,
+    .cart-summary,
+    .carrito-resumen {
+        margin-top: 1rem;
+    }
+
+    .slider-img {
+        height: 360px;
+    }
+
+    .slider-caption {
+        left: 6%;
+        bottom: 14%;
+        max-width: 430px;
+    }
+
+        .slider-caption h1 {
+            font-size: 2rem;
+        }
+
+        .slider-caption p {
+            font-size: 0.98rem;
+        }
+
+    .category-image-box {
+        height: 220px;
+    }
+
+    .mc-whatsapp-widget {
+        width: 300px;
+        right: 12px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .home-slider-section {
+        padding: 1rem 0 2rem;
+    }
+
+    .logo-mc {
+        width: 68px;
+        height: 68px;
+    }
+
+    .brand-title {
+        font-size: 1.35rem;
+    }
+
+    .slider-img {
+        height: 300px;
+    }
+
+    .slider-caption {
+        left: 6%;
+        right: 6%;
+        bottom: 12%;
+        max-width: 88%;
+    }
+
+        .slider-caption h1 {
+            font-size: 1.55rem;
+        }
+
+        .slider-caption p {
+            font-size: 0.9rem;
+            margin-bottom: 0.9rem;
+        }
+
+    .btn-slider-primary,
+    .btn-slider-whatsapp {
+        padding: 0.65rem 1.05rem;
+        font-size: 0.86rem;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 12%;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .carousel-indicators [data-bs-target] {
+        width: 7px;
+        height: 7px;
+    }
+
+    .carousel-indicators .active {
+        width: 26px;
+    }
+
+    .categories-title {
+        font-size: 1.8rem;
+    }
+
+    .categories-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .category-image-box {
+        height: 210px;
+    }
+
+    .category-button-name {
+        font-size: 0.92rem;
+        padding: 0.75rem 1.15rem;
+    }
+
+    .section-title {
+        font-size: 1.55rem;
+    }
+
+    .mc-whatsapp-widget {
+        width: calc(100vw - 24px);
+        right: 12px;
+        bottom: 12px;
+    }
 }

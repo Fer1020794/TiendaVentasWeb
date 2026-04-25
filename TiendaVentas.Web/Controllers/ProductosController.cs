@@ -8,19 +8,22 @@ namespace TiendaVentas.Web.Controllers
         private readonly ProductoService _productoService;
         private readonly CategoriaService _categoriaService;
 
-        public ProductosController(ProductoService productoService, CategoriaService categoriaService)
+        public ProductosController(
+            ProductoService productoService,
+            CategoriaService categoriaService)
         {
             _productoService = productoService;
             _categoriaService = categoriaService;
         }
 
-        public async Task<IActionResult> Index(int? idCategoria)
+        public async Task<IActionResult> Index(int? idCategoria, string? texto)
         {
-            var productos = await _productoService.ObtenerProductosAsync(idCategoria);
+            var productos = await _productoService.ObtenerProductosAsync(idCategoria, texto);
             var categorias = await _categoriaService.ObtenerCategoriasAsync();
 
             ViewBag.Categorias = categorias;
             ViewBag.IdCategoria = idCategoria;
+            ViewBag.Texto = texto;
 
             return View(productos);
         }

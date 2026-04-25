@@ -4,16 +4,16 @@ using TiendaVentas.Web.Services;
 
 namespace TiendaVentas.Web.Controllers
 {
-    public class AdminCategoriasController : Controller
+    public class AdminBannersController : Controller
     {
-        private readonly CategoriaService _categoriaService;
+        private readonly BannerService _bannerService;
         private readonly IWebHostEnvironment _env;
 
-        public AdminCategoriasController(
-            CategoriaService categoriaService,
+        public AdminBannersController(
+            BannerService bannerService,
             IWebHostEnvironment env)
         {
-            _categoriaService = categoriaService;
+            _bannerService = bannerService;
             _env = env;
         }
 
@@ -22,8 +22,8 @@ namespace TiendaVentas.Web.Controllers
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
-            var categorias = await _categoriaService.ObtenerTodasAdminAsync();
-            return View(categorias);
+            var banners = await _bannerService.ObtenerTodosAdminAsync();
+            return View(banners);
         }
 
         [HttpGet]
@@ -32,26 +32,30 @@ namespace TiendaVentas.Web.Controllers
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
-            return View(new Categoria { Estado = "A" });
+            return View(new Banner
+            {
+                Estado = "A",
+                Orden = 1
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Categoria model, IFormFile? imagen)
+        public async Task<IActionResult> Create(Banner model, IFormFile? imagen)
         {
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
+            if (imagen == null || imagen.Length == 0)
+                ModelState.AddModelError("", "Debe seleccionar una imagen para el banner.");
+
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (imagen != null && imagen.Length > 0)
-            {
-                model.Imagen_Url = await GuardarImagenCategoriaAsync(imagen);
-            }
+            model.Imagen_Url = await GuardarImagenBannerAsync(imagen!);
 
-            await _categoriaService.CrearAsync(model);
+            await _bannerService.CrearAsync(model);
 
-            TempData["Success"] = "Categoría creada correctamente.";
+            TempData["Success"] = "Banner creado correctamente.";
             return RedirectToAction("Index");
         }
 
@@ -61,40 +65,40 @@ namespace TiendaVentas.Web.Controllers
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
-            var categoria = await _categoriaService.ObtenerPorIdAsync(id);
+            var banner = await _bannerService.ObtenerPorIdAsync(id);
 
-            if (categoria == null)
+            if (banner == null)
                 return NotFound();
 
-            return View(categoria);
+            return View(banner);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Categoria model, IFormFile? imagen)
+        public async Task<IActionResult> Edit(Banner model, IFormFile? imagen)
         {
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
+            var bannerActual = await _bannerService.ObtenerPorIdAsync(model.Id_Banner);
+
+            if (bannerActual == null)
+                return NotFound();
+
             if (!ModelState.IsValid)
                 return View(model);
 
-            var categoriaActual = await _categoriaService.ObtenerPorIdAsync(model.Id_Categoria);
-
-            if (categoriaActual == null)
-                return NotFound();
-
             if (imagen != null && imagen.Length > 0)
             {
-                model.Imagen_Url = await GuardarImagenCategoriaAsync(imagen);
+                model.Imagen_Url = await GuardarImagenBannerAsync(imagen);
             }
             else
             {
-                model.Imagen_Url = categoriaActual.Imagen_Url;
+                model.Imagen_Url = bannerActual.Imagen_Url;
             }
 
-            await _categoriaService.ActualizarAsync(model);
+            await _bannerService.ActualizarAsync(model);
 
-            TempData["Success"] = "Categoría actualizada correctamente.";
+            TempData["Success"] = "Banner actualizado correctamente.";
             return RedirectToAction("Index");
         }
 
@@ -104,13 +108,25 @@ namespace TiendaVentas.Web.Controllers
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
-            await _categoriaService.BajaLogicaAsync(id);
+            await _bannerService.BajaLogicaAsync(id);
 
-            TempData["Success"] = "Categoría desactivada correctamente.";
+            TempData["Success"] = "Banner desactivado correctamente.";
             return RedirectToAction("Index");
         }
 
-        private async Task<string> GuardarImagenCategoriaAsync(IFormFile imagen)
+        [HttpPost]
+        public async Task<IActionResult> Activar(int id)
+        {
+            if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
+                return RedirectToAction("Login", "AdminAuth");
+
+            await _bannerService.ActivarAsync(id);
+
+            TempData["Success"] = "Banner activado correctamente.";
+            return RedirectToAction("Index");
+        }
+
+        private async Task<string> GuardarImagenBannerAsync(IFormFile imagen)
         {
             var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
             var extension = Path.GetExtension(imagen.FileName).ToLowerInvariant();
@@ -118,7 +134,7 @@ namespace TiendaVentas.Web.Controllers
             if (!extensionesPermitidas.Contains(extension))
                 throw new InvalidOperationException("Solo se permiten imágenes JPG, JPEG, PNG o WEBP.");
 
-            var carpeta = Path.Combine(_env.WebRootPath, "images", "categorias");
+            var carpeta = Path.Combine(_env.WebRootPath, "images", "banners");
 
             if (!Directory.Exists(carpeta))
                 Directory.CreateDirectory(carpeta);
@@ -131,7 +147,7 @@ namespace TiendaVentas.Web.Controllers
                 await imagen.CopyToAsync(stream);
             }
 
-            return $"/images/categorias/{nombreArchivo}";
+            return $"/images/banners/{nombreArchivo}";
         }
     }
 }

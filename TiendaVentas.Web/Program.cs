@@ -11,6 +11,8 @@ builder.Services.AddScoped<PedidoService>();
 builder.Services.AddScoped<PedidoPdfService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<AdminAuthService>();
+builder.Services.AddScoped<BannerService>();
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
