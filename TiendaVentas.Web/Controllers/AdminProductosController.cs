@@ -36,6 +36,7 @@ namespace TiendaVentas.Web.Controllers
                 return RedirectToAction("Login", "AdminAuth");
 
             ViewBag.Categorias = await _categoriaService.ObtenerCategoriasAsync();
+
             return View(new ProductoFormViewModel
             {
                 Estado = "A",
@@ -58,22 +59,13 @@ namespace TiendaVentas.Web.Controllers
 
             if (model.ImagenFile != null && model.ImagenFile.Length > 0)
             {
-                var carpeta = Path.Combine(_env.WebRootPath, "images", "productos");
-                if (!Directory.Exists(carpeta))
-                    Directory.CreateDirectory(carpeta);
-
-                var nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(model.ImagenFile.FileName)}";
-                var rutaFisica = Path.Combine(carpeta, nombreArchivo);
-
-                using var stream = new FileStream(rutaFisica, FileMode.Create);
-                await model.ImagenFile.CopyToAsync(stream);
-
-                rutaImagen = $"/images/productos/{nombreArchivo}";
+                rutaImagen = await GuardarImagenProductoAsync(model.ImagenFile);
             }
 
             var producto = new Producto
             {
                 Id_Categoria = model.Id_Categoria,
+                Codigo_Producto = model.Codigo_Producto,
                 Nombre = model.Nombre,
                 Descripcion = model.Descripcion,
                 Precio = model.Precio,
@@ -83,6 +75,7 @@ namespace TiendaVentas.Web.Controllers
             };
 
             await _productoService.CrearAsync(producto);
+
             TempData["Success"] = "Producto creado correctamente.";
             return RedirectToAction("Index");
         }
@@ -94,6 +87,7 @@ namespace TiendaVentas.Web.Controllers
                 return RedirectToAction("Login", "AdminAuth");
 
             var producto = await _productoService.ObtenerProductoPorIdAsync(id);
+
             if (producto == null)
                 return NotFound();
 
@@ -103,6 +97,7 @@ namespace TiendaVentas.Web.Controllers
             {
                 Id_Producto = producto.Id_Producto,
                 Id_Categoria = producto.Id_Categoria,
+                Codigo_Producto = producto.Codigo_Producto,
                 Nombre = producto.Nombre,
                 Descripcion = producto.Descripcion,
                 Precio = producto.Precio,
@@ -129,23 +124,14 @@ namespace TiendaVentas.Web.Controllers
 
             if (model.ImagenFile != null && model.ImagenFile.Length > 0)
             {
-                var carpeta = Path.Combine(_env.WebRootPath, "images", "productos");
-                if (!Directory.Exists(carpeta))
-                    Directory.CreateDirectory(carpeta);
-
-                var nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(model.ImagenFile.FileName)}";
-                var rutaFisica = Path.Combine(carpeta, nombreArchivo);
-
-                using var stream = new FileStream(rutaFisica, FileMode.Create);
-                await model.ImagenFile.CopyToAsync(stream);
-
-                rutaImagen = $"/images/productos/{nombreArchivo}";
+                rutaImagen = await GuardarImagenProductoAsync(model.ImagenFile);
             }
 
             var producto = new Producto
             {
                 Id_Producto = model.Id_Producto,
                 Id_Categoria = model.Id_Categoria,
+                Codigo_Producto = model.Codigo_Producto,
                 Nombre = model.Nombre,
                 Descripcion = model.Descripcion,
                 Precio = model.Precio,
@@ -155,6 +141,7 @@ namespace TiendaVentas.Web.Controllers
             };
 
             await _productoService.ActualizarAsync(producto);
+
             TempData["Success"] = "Producto actualizado correctamente.";
             return RedirectToAction("Index");
         }
@@ -166,8 +153,31 @@ namespace TiendaVentas.Web.Controllers
                 return RedirectToAction("Login", "AdminAuth");
 
             await _productoService.BajaLogicaAsync(id);
+
             TempData["Success"] = "Producto desactivado correctamente.";
             return RedirectToAction("Index");
+        }
+
+        private async Task<string> GuardarImagenProductoAsync(IFormFile imagen)
+        {
+            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(imagen.FileName).ToLowerInvariant();
+
+            if (!extensionesPermitidas.Contains(extension))
+                throw new InvalidOperationException("Solo se permiten imágenes JPG, JPEG, PNG o WEBP.");
+
+            var carpeta = Path.Combine(_env.WebRootPath, "images", "productos");
+
+            if (!Directory.Exists(carpeta))
+                Directory.CreateDirectory(carpeta);
+
+            var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+            var rutaFisica = Path.Combine(carpeta, nombreArchivo);
+
+            using var stream = new FileStream(rutaFisica, FileMode.Create);
+            await imagen.CopyToAsync(stream);
+
+            return $"/images/productos/{nombreArchivo}";
         }
     }
 }

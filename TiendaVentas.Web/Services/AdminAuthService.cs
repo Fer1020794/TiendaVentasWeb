@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 using TiendaVentas.Web.Models;
 
 namespace TiendaVentas.Web.Services
@@ -26,13 +26,13 @@ namespace TiendaVentas.Web.Services
                 FROM ADMIN_USUARIOS
                 WHERE UPPER(CORREO) = UPPER(@Correo)
                   AND CLAVE = @Clave
-                  AND ESTADO = 'A'";
+                  AND ESTADO = 'A';";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
 
             return await connection.QueryFirstOrDefaultAsync<AdminUsuario>(sql, new
             {
-                Correo = correo,
+                Correo = correo?.Trim(),
                 Clave = clave
             });
         }

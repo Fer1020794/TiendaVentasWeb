@@ -48,6 +48,7 @@ namespace TiendaVentas.Web.Controllers
                 carrito.Add(new CarritoItem
                 {
                     Id_Producto = producto.Id_Producto,
+                    Codigo_Producto = producto.Codigo_Producto,
                     Nombre = producto.Nombre,
                     Imagen_Url = producto.Imagen_Url,
                     Precio = producto.Precio,

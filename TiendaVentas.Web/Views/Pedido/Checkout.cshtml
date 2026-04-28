@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h1 class="fw-bold mb-1">Finalizar Pedido</h1>
-            <p class="text-muted mb-0">Completa tus datos para generar tu solicitud formal.</p>
+            <p class="text-muted mb-0">Completa tus datos para generar tu pedido.</p>
         </div>
 
         <a asp-controller="Carrito" asp-action="Index" class="btn btn-outline-dark rounded-pill">
@@ -27,31 +27,48 @@
                             <div class="col-md-6">
                                 <label asp-for="Nombre_Cliente" class="form-label">Nombre completo</label>
                                 <input asp-for="Nombre_Cliente" class="form-control rounded-4" />
+                                <span asp-validation-for="Nombre_Cliente" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6">
                                 <label asp-for="Telefono" class="form-label">Teléfono</label>
                                 <input asp-for="Telefono" class="form-control rounded-4" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6">
                                 <label asp-for="Correo_Cliente" class="form-label">Correo</label>
                                 <input asp-for="Correo_Cliente" class="form-control rounded-4" />
+                                <span asp-validation-for="Correo_Cliente" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6">
                                 <label asp-for="Direccion" class="form-label">Dirección o referencia</label>
                                 <input asp-for="Direccion" class="form-control rounded-4" />
+                                <span asp-validation-for="Direccion" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Departamento" class="form-label">Departamento</label>
+                                <input asp-for="Departamento" class="form-control rounded-4" placeholder="Ej: Guatemala" />
+                                <span asp-validation-for="Departamento" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Municipio" class="form-label">Municipio</label>
+                                <input asp-for="Municipio" class="form-control rounded-4" placeholder="Ej: Mixco" />
+                                <span asp-validation-for="Municipio" class="text-danger"></span>
                             </div>
 
                             <div class="col-12">
                                 <label asp-for="Observaciones" class="form-label">Observaciones</label>
                                 <textarea asp-for="Observaciones" rows="4" class="form-control rounded-4"></textarea>
+                                <span asp-validation-for="Observaciones" class="text-danger"></span>
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-dark rounded-pill px-4 mt-4">
-                            Generar pedido formal
+                            Generar pedido
                         </button>
                     </form>
                 </div>

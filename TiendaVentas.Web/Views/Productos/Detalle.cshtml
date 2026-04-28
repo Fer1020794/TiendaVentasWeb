@@ -8,23 +8,20 @@
     var urlWhatsApp = $"https://wa.me/{numeroWhatsApp}?text={mensaje}";
 }
 
-<div class="container py-5 mb-5 pb-5">
+<div class="container product-detail-container py-5 mb-5 pb-5">
     <div class="row g-5 align-items-start">
 
-        <!-- IMAGEN -->
         <div class="col-md-5">
-            <div class="bg-light rounded-4 overflow-hidden shadow-sm">
+            <div class="product-detail-img-box">
                 <img src="@(string.IsNullOrWhiteSpace(Model.Imagen_Url) ? "/images/no-image.png" : Model.Imagen_Url)"
                      alt="@Model.Nombre"
-                     class="w-100"
-                     style="height: 380px; object-fit: cover;" />
+                     class="product-detail-img" />
             </div>
         </div>
 
-        <!-- DETALLE -->
         <div class="col-md-7 d-flex flex-column">
 
-            <span class="text-muted">@Model.Categoria</span>
+            <span class="product-category">@Model.Categoria</span>
 
             <h1 class="fw-bold mt-2">@Model.Nombre</h1>
 
@@ -34,7 +31,6 @@
                     : Model.Descripcion)
             </p>
 
-            <!-- STOCK -->
             <div class="mb-3">
                 @if (Model.Stock > 0)
                 {
@@ -50,10 +46,8 @@
                 }
             </div>
 
-            <!-- PRECIO -->
             <h2 class="fw-bold my-4">Q @Model.Precio.ToString("N2")</h2>
 
-            <!-- BOTONES -->
             <div class="mt-auto pt-3">
                 <div class="d-flex gap-3 flex-wrap">
 
@@ -62,6 +56,7 @@
                         <form asp-controller="Carrito" asp-action="Agregar" method="post">
                             <input type="hidden" name="idProducto" value="@Model.Id_Producto" />
                             <input type="hidden" name="cantidad" value="1" />
+
                             <button type="submit" class="btn btn-warning btn-lg rounded-pill px-4 fw-semibold">
                                 Agregar al carrito
                             </button>

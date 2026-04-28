@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 using TiendaVentas.Web.Models;
 
 namespace TiendaVentas.Web.Services
@@ -17,28 +17,30 @@ namespace TiendaVentas.Web.Services
         {
             const string sql = @"
                 SELECT
-                    P.ID_PRODUCTO  AS Id_Producto,
-                    P.ID_CATEGORIA AS Id_Categoria,
-                    P.NOMBRE       AS Nombre,
-                    P.DESCRIPCION  AS Descripcion,
-                    P.PRECIO       AS Precio,
-                    P.STOCK        AS Stock,
-                    P.IMAGEN_URL   AS Imagen_Url,
-                    P.ESTADO       AS Estado,
-                    C.NOMBRE       AS Categoria
+                    P.ID_PRODUCTO      AS Id_Producto,
+                    P.ID_CATEGORIA     AS Id_Categoria,
+                    P.CODIGO_PRODUCTO  AS Codigo_Producto,
+                    P.NOMBRE           AS Nombre,
+                    P.DESCRIPCION      AS Descripcion,
+                    P.PRECIO           AS Precio,
+                    P.STOCK            AS Stock,
+                    P.IMAGEN_URL       AS Imagen_Url,
+                    P.ESTADO           AS Estado,
+                    C.NOMBRE           AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
                 WHERE P.ESTADO = 'A'
                   AND (@IdCategoria IS NULL OR @IdCategoria <= 0 OR P.ID_CATEGORIA = @IdCategoria)
                   AND (
                         @Texto IS NULL OR @Texto = ''
-                        OR P.NOMBRE LIKE '%' + @Texto + '%'
-                        OR P.DESCRIPCION LIKE '%' + @Texto + '%'
-                        OR C.NOMBRE LIKE '%' + @Texto + '%'
+                        OR P.CODIGO_PRODUCTO LIKE CONCAT('%', @Texto, '%')
+                        OR P.NOMBRE LIKE CONCAT('%', @Texto, '%')
+                        OR P.DESCRIPCION LIKE CONCAT('%', @Texto, '%')
+                        OR C.NOMBRE LIKE CONCAT('%', @Texto, '%')
                       )
                 ORDER BY P.ID_PRODUCTO DESC;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
 
             var resultado = await connection.QueryAsync<Producto>(sql, new
             {
@@ -52,22 +54,24 @@ namespace TiendaVentas.Web.Services
         public async Task<List<Producto>> ObtenerProductosDestacadosAsync(int cantidad = 8)
         {
             const string sql = @"
-                SELECT TOP (@Cantidad)
-                    P.ID_PRODUCTO  AS Id_Producto,
-                    P.ID_CATEGORIA AS Id_Categoria,
-                    P.NOMBRE       AS Nombre,
-                    P.DESCRIPCION  AS Descripcion,
-                    P.PRECIO       AS Precio,
-                    P.STOCK        AS Stock,
-                    P.IMAGEN_URL   AS Imagen_Url,
-                    P.ESTADO       AS Estado,
-                    C.NOMBRE       AS Categoria
+                SELECT
+                    P.ID_PRODUCTO      AS Id_Producto,
+                    P.ID_CATEGORIA     AS Id_Categoria,
+                    P.CODIGO_PRODUCTO  AS Codigo_Producto,
+                    P.NOMBRE           AS Nombre,
+                    P.DESCRIPCION      AS Descripcion,
+                    P.PRECIO           AS Precio,
+                    P.STOCK            AS Stock,
+                    P.IMAGEN_URL       AS Imagen_Url,
+                    P.ESTADO           AS Estado,
+                    C.NOMBRE           AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
                 WHERE P.ESTADO = 'A'
-                ORDER BY P.ID_PRODUCTO DESC;";
+                ORDER BY P.ID_PRODUCTO DESC
+                LIMIT @Cantidad;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
 
             var resultado = await connection.QueryAsync<Producto>(sql, new
             {
@@ -81,20 +85,22 @@ namespace TiendaVentas.Web.Services
         {
             const string sql = @"
                 SELECT
-                    P.ID_PRODUCTO  AS Id_Producto,
-                    P.ID_CATEGORIA AS Id_Categoria,
-                    P.NOMBRE       AS Nombre,
-                    P.DESCRIPCION  AS Descripcion,
-                    P.PRECIO       AS Precio,
-                    P.STOCK        AS Stock,
-                    P.IMAGEN_URL   AS Imagen_Url,
-                    P.ESTADO       AS Estado,
-                    C.NOMBRE       AS Categoria
+                    P.ID_PRODUCTO      AS Id_Producto,
+                    P.ID_CATEGORIA     AS Id_Categoria,
+                    P.CODIGO_PRODUCTO  AS Codigo_Producto,
+                    P.NOMBRE           AS Nombre,
+                    P.DESCRIPCION      AS Descripcion,
+                    P.PRECIO           AS Precio,
+                    P.STOCK            AS Stock,
+                    P.IMAGEN_URL       AS Imagen_Url,
+                    P.ESTADO           AS Estado,
+                    C.NOMBRE           AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
                 WHERE P.ID_PRODUCTO = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             return await connection.QueryFirstOrDefaultAsync<Producto>(sql, new { Id = id });
         }
 
@@ -102,20 +108,22 @@ namespace TiendaVentas.Web.Services
         {
             const string sql = @"
                 SELECT
-                    P.ID_PRODUCTO  AS Id_Producto,
-                    P.ID_CATEGORIA AS Id_Categoria,
-                    P.NOMBRE       AS Nombre,
-                    P.DESCRIPCION  AS Descripcion,
-                    P.PRECIO       AS Precio,
-                    P.STOCK        AS Stock,
-                    P.IMAGEN_URL   AS Imagen_Url,
-                    P.ESTADO       AS Estado,
-                    C.NOMBRE       AS Categoria
+                    P.ID_PRODUCTO      AS Id_Producto,
+                    P.ID_CATEGORIA     AS Id_Categoria,
+                    P.CODIGO_PRODUCTO  AS Codigo_Producto,
+                    P.NOMBRE           AS Nombre,
+                    P.DESCRIPCION      AS Descripcion,
+                    P.PRECIO           AS Precio,
+                    P.STOCK            AS Stock,
+                    P.IMAGEN_URL       AS Imagen_Url,
+                    P.ESTADO           AS Estado,
+                    C.NOMBRE           AS Categoria
                 FROM PRODUCTOS P
                 INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
                 ORDER BY P.ID_PRODUCTO DESC;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<Producto>(sql);
             return resultado.ToList();
         }
@@ -126,6 +134,7 @@ namespace TiendaVentas.Web.Services
                 INSERT INTO PRODUCTOS
                 (
                     ID_CATEGORIA,
+                    CODIGO_PRODUCTO,
                     NOMBRE,
                     DESCRIPCION,
                     PRECIO,
@@ -137,17 +146,36 @@ namespace TiendaVentas.Web.Services
                 VALUES
                 (
                     @Id_Categoria,
+                    NULLIF(@Codigo_Producto, ''),
                     @Nombre,
                     @Descripcion,
                     @Precio,
                     @Stock,
                     @Imagen_Url,
                     @Estado,
-                    GETDATE()
-                );";
+                    NOW()
+                );
 
-            using var connection = new SqlConnection(_connectionString);
-            await connection.ExecuteAsync(sql, model);
+                SET @NuevoId = LAST_INSERT_ID();
+
+                UPDATE PRODUCTOS
+                SET CODIGO_PRODUCTO = @NuevoId
+                WHERE ID_PRODUCTO = @NuevoId
+                  AND CODIGO_PRODUCTO IS NULL;";
+
+            using var connection = new MySqlConnection(_connectionString);
+
+            await connection.ExecuteAsync(sql, new
+            {
+                model.Id_Categoria,
+                Codigo_Producto = model.Codigo_Producto?.Trim(),
+                model.Nombre,
+                model.Descripcion,
+                model.Precio,
+                model.Stock,
+                model.Imagen_Url,
+                model.Estado
+            });
         }
 
         public async Task ActualizarAsync(Producto model)
@@ -155,16 +183,34 @@ namespace TiendaVentas.Web.Services
             const string sql = @"
                 UPDATE PRODUCTOS
                 SET ID_CATEGORIA = @Id_Categoria,
+                    CODIGO_PRODUCTO = NULLIF(@Codigo_Producto, ''),
                     NOMBRE = @Nombre,
                     DESCRIPCION = @Descripcion,
                     PRECIO = @Precio,
                     STOCK = @Stock,
                     IMAGEN_URL = @Imagen_Url,
                     ESTADO = @Estado
-                WHERE ID_PRODUCTO = @Id_Producto;";
+                WHERE ID_PRODUCTO = @Id_Producto;
 
-            using var connection = new SqlConnection(_connectionString);
-            await connection.ExecuteAsync(sql, model);
+                UPDATE PRODUCTOS
+                SET CODIGO_PRODUCTO = ID_PRODUCTO
+                WHERE ID_PRODUCTO = @Id_Producto
+                  AND CODIGO_PRODUCTO IS NULL;";
+
+            using var connection = new MySqlConnection(_connectionString);
+
+            await connection.ExecuteAsync(sql, new
+            {
+                model.Id_Producto,
+                model.Id_Categoria,
+                Codigo_Producto = model.Codigo_Producto?.Trim(),
+                model.Nombre,
+                model.Descripcion,
+                model.Precio,
+                model.Stock,
+                model.Imagen_Url,
+                model.Estado
+            });
         }
 
         public async Task BajaLogicaAsync(int id)
@@ -174,7 +220,7 @@ namespace TiendaVentas.Web.Services
                 SET ESTADO = 'I'
                 WHERE ID_PRODUCTO = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
             await connection.ExecuteAsync(sql, new { Id = id });
         }
     }

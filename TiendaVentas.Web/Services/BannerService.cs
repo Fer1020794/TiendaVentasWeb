@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 using TiendaVentas.Web.Models;
 
 namespace TiendaVentas.Web.Services
@@ -13,6 +13,7 @@ namespace TiendaVentas.Web.Services
             _connectionString = configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
         }
 
+        
         public async Task<List<Banner>> ObtenerActivosAsync()
         {
             const string sql = @"
@@ -30,11 +31,13 @@ namespace TiendaVentas.Web.Services
                 WHERE ESTADO = 'A'
                 ORDER BY ORDEN ASC, ID_BANNER DESC;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<Banner>(sql);
             return resultado.ToList();
         }
 
+        
         public async Task<List<Banner>> ObtenerTodosAdminAsync()
         {
             const string sql = @"
@@ -51,11 +54,13 @@ namespace TiendaVentas.Web.Services
                 FROM BANNERS
                 ORDER BY ORDEN ASC, ID_BANNER DESC;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<Banner>(sql);
             return resultado.ToList();
         }
 
+        
         public async Task<Banner?> ObtenerPorIdAsync(int id)
         {
             const string sql = @"
@@ -72,10 +77,12 @@ namespace TiendaVentas.Web.Services
                 FROM BANNERS
                 WHERE ID_BANNER = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             return await connection.QueryFirstOrDefaultAsync<Banner>(sql, new { Id = id });
         }
 
+        
         public async Task CrearAsync(Banner model)
         {
             const string sql = @"
@@ -87,7 +94,8 @@ namespace TiendaVentas.Web.Services
                     BOTON_TEXTO,
                     BOTON_URL,
                     ORDEN,
-                    ESTADO
+                    ESTADO,
+                    FECHA_CREACION
                 )
                 VALUES
                 (
@@ -97,13 +105,16 @@ namespace TiendaVentas.Web.Services
                     @Boton_Texto,
                     @Boton_Url,
                     @Orden,
-                    @Estado
+                    @Estado,
+                    NOW()
                 );";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, model);
         }
 
+     
         public async Task ActualizarAsync(Banner model)
         {
             const string sql = @"
@@ -117,10 +128,12 @@ namespace TiendaVentas.Web.Services
                     ESTADO = @Estado
                 WHERE ID_BANNER = @Id_Banner;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, model);
         }
 
+        
         public async Task BajaLogicaAsync(int id)
         {
             const string sql = @"
@@ -128,10 +141,12 @@ namespace TiendaVentas.Web.Services
                 SET ESTADO = 'I'
                 WHERE ID_BANNER = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
+        
         public async Task ActivarAsync(int id)
         {
             const string sql = @"
@@ -139,7 +154,8 @@ namespace TiendaVentas.Web.Services
                 SET ESTADO = 'A'
                 WHERE ID_BANNER = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, new { Id = id });
         }
     }

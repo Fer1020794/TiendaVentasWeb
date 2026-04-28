@@ -6,7 +6,9 @@
         public string Nombre_Cliente { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;
         public string? Correo_Cliente { get; set; }
-        public string? Direccion { get; set; }
+        public string Direccion { get; set; } = string.Empty;
+        public string Departamento { get; set; } = string.Empty;
+        public string Municipio { get; set; } = string.Empty;
         public string? Observaciones { get; set; }
         public decimal Total { get; set; }
         public string Estado { get; set; } = "GENERADO";

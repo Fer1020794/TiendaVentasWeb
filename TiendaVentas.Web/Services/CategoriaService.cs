@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 using TiendaVentas.Web.Models;
 
 namespace TiendaVentas.Web.Services
@@ -13,36 +13,28 @@ namespace TiendaVentas.Web.Services
             _connectionString = configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
         }
 
+        
         public async Task<List<Categoria>> ObtenerCategoriasAsync()
         {
             const string sql = @"
-                ;WITH CategoriasUnicas AS
-                (
-                    SELECT
-                        ID_CATEGORIA,
-                        NOMBRE,
-                        DESCRIPCION,
-                        ESTADO,
-                        IMAGEN_URL,
-                        ROW_NUMBER() OVER (PARTITION BY NOMBRE ORDER BY ID_CATEGORIA) AS RN
-                    FROM CATEGORIAS
-                    WHERE ESTADO = 'A'
-                )
                 SELECT
-                    ID_CATEGORIA AS Id_Categoria,
+                    MIN(ID_CATEGORIA) AS Id_Categoria,
                     NOMBRE AS Nombre,
-                    DESCRIPCION AS Descripcion,
-                    ESTADO AS Estado,
-                    IMAGEN_URL AS Imagen_Url
-                FROM CategoriasUnicas
-                WHERE RN = 1
+                    MAX(DESCRIPCION) AS Descripcion,
+                    MAX(ESTADO) AS Estado,
+                    MAX(IMAGEN_URL) AS Imagen_Url
+                FROM CATEGORIAS
+                WHERE ESTADO = 'A'
+                GROUP BY NOMBRE
                 ORDER BY NOMBRE;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<Categoria>(sql);
             return resultado.ToList();
         }
 
+        
         public async Task<List<Categoria>> ObtenerTodasAdminAsync()
         {
             const string sql = @"
@@ -55,11 +47,13 @@ namespace TiendaVentas.Web.Services
                 FROM CATEGORIAS
                 ORDER BY ID_CATEGORIA DESC;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<Categoria>(sql);
             return resultado.ToList();
         }
 
+       
         public async Task<Categoria?> ObtenerPorIdAsync(int id)
         {
             const string sql = @"
@@ -72,10 +66,12 @@ namespace TiendaVentas.Web.Services
                 FROM CATEGORIAS
                 WHERE ID_CATEGORIA = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             return await connection.QueryFirstOrDefaultAsync<Categoria>(sql, new { Id = id });
         }
 
+        
         public async Task CrearAsync(Categoria model)
         {
             const string sql = @"
@@ -94,10 +90,12 @@ namespace TiendaVentas.Web.Services
                     @Imagen_Url
                 );";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, model);
         }
 
+     
         public async Task ActualizarAsync(Categoria model)
         {
             const string sql = @"
@@ -108,10 +106,12 @@ namespace TiendaVentas.Web.Services
                     IMAGEN_URL = @Imagen_Url
                 WHERE ID_CATEGORIA = @Id_Categoria;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, model);
         }
 
+        
         public async Task BajaLogicaAsync(int id)
         {
             const string sql = @"
@@ -119,7 +119,8 @@ namespace TiendaVentas.Web.Services
                 SET ESTADO = 'I'
                 WHERE ID_CATEGORIA = @Id;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, new { Id = id });
         }
     }

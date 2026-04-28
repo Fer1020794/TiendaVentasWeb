@@ -43,11 +43,12 @@ namespace TiendaVentas.Web.Services
                         col.Spacing(10);
 
                         col.Item().Text("Datos del cliente").Bold().FontSize(14);
-
                         col.Item().Text($"Nombre: {model.Nombre_Cliente}");
                         col.Item().Text($"Teléfono: {model.Telefono}");
                         col.Item().Text($"Correo: {model.Correo_Cliente ?? "-"}");
-                        col.Item().Text($"Dirección: {model.Direccion ?? "-"}");
+                        col.Item().Text($"Dirección: {model.Direccion}");
+                        col.Item().Text($"Departamento: {model.Departamento}");
+                        col.Item().Text($"Municipio: {model.Municipio}");
                         col.Item().Text($"Observaciones: {model.Observaciones ?? "-"}");
 
                         col.Item().PaddingTop(10).Text("Detalle del pedido").Bold().FontSize(14);
@@ -56,6 +57,7 @@ namespace TiendaVentas.Web.Services
                         {
                             table.ColumnsDefinition(columns =>
                             {
+                                columns.RelativeColumn(2);
                                 columns.RelativeColumn(4);
                                 columns.RelativeColumn(1);
                                 columns.RelativeColumn(2);
@@ -64,6 +66,7 @@ namespace TiendaVentas.Web.Services
 
                             table.Header(header =>
                             {
+                                header.Cell().Element(CellStyle).Text("Código").Bold();
                                 header.Cell().Element(CellStyle).Text("Producto").Bold();
                                 header.Cell().Element(CellStyle).AlignCenter().Text("Cant.").Bold();
                                 header.Cell().Element(CellStyle).AlignRight().Text("Precio").Bold();
@@ -72,6 +75,7 @@ namespace TiendaVentas.Web.Services
 
                             foreach (var item in model.Items)
                             {
+                                table.Cell().Element(CellStyle).Text(string.IsNullOrWhiteSpace(item.Codigo_Producto) ? item.Id_Producto.ToString() : item.Codigo_Producto);
                                 table.Cell().Element(CellStyle).Text(item.Nombre);
                                 table.Cell().Element(CellStyle).AlignCenter().Text(item.Cantidad.ToString());
                                 table.Cell().Element(CellStyle).AlignRight().Text($"Q {item.Precio:N2}");

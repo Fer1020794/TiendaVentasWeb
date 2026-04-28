@@ -9,7 +9,11 @@
 
     foreach (var item in Model.Items)
     {
-        mensaje += $"- {item.Nombre} | Cantidad: {item.Cantidad} | Precio: Q {item.Precio:N2} | Subtotal: Q {item.Subtotal:N2}%0A";
+        var codigo = string.IsNullOrWhiteSpace(item.Codigo_Producto)
+            ? item.Id_Producto.ToString()
+            : item.Codigo_Producto;
+
+        mensaje += $"- Código: {codigo} | {item.Nombre} | Cantidad: {item.Cantidad} | Precio: Q {item.Precio:N2} | Subtotal: Q {item.Subtotal:N2}%0A";
     }
 
     mensaje += $"%0ATotal: Q {Model.Total:N2}";
@@ -37,7 +41,7 @@
     .cart-product-img {
         width: 90px;
         height: 90px;
-        object-fit: cover;
+        object-fit: contain;
         border-radius: 16px;
         background: #f8f9fa;
     }
@@ -52,6 +56,11 @@
     .cart-product-category {
         color: #888;
         font-size: 0.9rem;
+    }
+
+    .cart-product-code {
+        color: #666;
+        font-size: 0.85rem;
     }
 
     .cart-price {
@@ -115,6 +124,10 @@
 
                 @foreach (var item in Model.Items)
                 {
+                    var codigo = string.IsNullOrWhiteSpace(item.Codigo_Producto)
+                        ? item.Id_Producto.ToString()
+                        : item.Codigo_Producto;
+
                     <div class="cart-card mb-3">
                         <div class="card-body p-4">
                             <div class="row align-items-center g-3">
@@ -128,6 +141,9 @@
                                 <div class="col-md-4">
                                     <div class="cart-product-name">@item.Nombre</div>
                                     <div class="cart-product-category">@item.Categoria</div>
+                                    <div class="cart-product-code">
+                                        Código: <strong>@codigo</strong>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-2 text-center">
@@ -193,7 +209,7 @@
                         </div>
 
                         <a asp-controller="Pedido" asp-action="Checkout" class="btn btn-success w-100 rounded-pill py-2 mb-2 fw-semibold">
-                            Generar pedido formal
+                            Generar pedido
                         </a>
 
                         <form asp-controller="Carrito" asp-action="Vaciar" method="post">

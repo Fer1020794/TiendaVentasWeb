@@ -13,7 +13,15 @@ namespace TiendaVentas.Web.Models
         [EmailAddress(ErrorMessage = "Correo inválido.")]
         public string? Correo_Cliente { get; set; }
 
-        public string? Direccion { get; set; }
+        [Required(ErrorMessage = "La dirección o referencia es obligatoria.")]
+        public string Direccion { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "El departamento es obligatorio.")]
+        public string Departamento { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "El municipio es obligatorio.")]
+        public string Municipio { get; set; } = string.Empty;
+
         public string? Observaciones { get; set; }
 
         public List<CarritoItem> Items { get; set; } = new();

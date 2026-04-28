@@ -4,6 +4,8 @@
     {
         public int Id_Producto { get; set; }
         public int Id_Categoria { get; set; }
+
+        public string? Codigo_Producto { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string? Descripcion { get; set; }
         public decimal Precio { get; set; }

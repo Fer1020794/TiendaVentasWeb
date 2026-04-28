@@ -80,6 +80,8 @@ namespace TiendaVentas.Web.Controllers
                     Telefono = model.Telefono,
                     Correo_Cliente = model.Correo_Cliente,
                     Direccion = model.Direccion,
+                    Departamento = model.Departamento,
+                    Municipio = model.Municipio,
                     Observaciones = model.Observaciones,
                     Total = model.Total,
                     Estado = "GENERADO"

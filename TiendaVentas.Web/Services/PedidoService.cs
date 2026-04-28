@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 using TiendaVentas.Web.Models;
 
 namespace TiendaVentas.Web.Services
@@ -15,10 +15,10 @@ namespace TiendaVentas.Web.Services
 
         public async Task<int> CrearPedidoAsync(Pedido pedido, List<CarritoItem> items)
         {
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            using var transaction = connection.BeginTransaction();
+            using var transaction = await connection.BeginTransactionAsync();
 
             try
             {
@@ -29,6 +29,8 @@ namespace TiendaVentas.Web.Services
                         TELEFONO,
                         CORREO_CLIENTE,
                         DIRECCION,
+                        DEPARTAMENTO,
+                        MUNICIPIO,
                         OBSERVACIONES,
                         TOTAL,
                         ESTADO,
@@ -40,13 +42,15 @@ namespace TiendaVentas.Web.Services
                         @Telefono,
                         @Correo_Cliente,
                         @Direccion,
+                        @Departamento,
+                        @Municipio,
                         @Observaciones,
                         @Total,
                         @Estado,
-                        GETDATE()
+                        NOW()
                     );
 
-                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    SELECT LAST_INSERT_ID();";
 
                 var idPedido = await connection.ExecuteScalarAsync<int>(
                     sqlPedido,
@@ -56,6 +60,8 @@ namespace TiendaVentas.Web.Services
                         pedido.Telefono,
                         pedido.Correo_Cliente,
                         pedido.Direccion,
+                        pedido.Departamento,
+                        pedido.Municipio,
                         pedido.Observaciones,
                         pedido.Total,
                         pedido.Estado
@@ -100,12 +106,13 @@ namespace TiendaVentas.Web.Services
                     );
                 }
 
-                transaction.Commit();
+                await transaction.CommitAsync();
                 return idPedido;
             }
-            catch
+            catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
+                Console.WriteLine("ERROR CREAR PEDIDO: " + ex.Message);
                 throw;
             }
         }
@@ -115,9 +122,10 @@ namespace TiendaVentas.Web.Services
             const string sql = @"
                 UPDATE PEDIDOS
                 SET PDF_URL = @PdfUrl
-                WHERE ID_PEDIDO = @IdPedido";
+                WHERE ID_PEDIDO = @IdPedido;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, new
             {
                 PdfUrl = pdfUrl,
@@ -134,15 +142,18 @@ namespace TiendaVentas.Web.Services
                     TELEFONO        AS Telefono,
                     CORREO_CLIENTE  AS Correo_Cliente,
                     DIRECCION       AS Direccion,
+                    DEPARTAMENTO    AS Departamento,
+                    MUNICIPIO       AS Municipio,
                     OBSERVACIONES   AS Observaciones,
                     TOTAL           AS Total,
                     ESTADO          AS Estado,
                     PDF_URL         AS Pdf_Url,
                     FECHA_CREACION  AS Fecha_Creacion
                 FROM PEDIDOS
-                ORDER BY ID_PEDIDO DESC";
+                ORDER BY ID_PEDIDO DESC;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<Pedido>(sql);
             return resultado.ToList();
         }
@@ -156,15 +167,18 @@ namespace TiendaVentas.Web.Services
                     TELEFONO        AS Telefono,
                     CORREO_CLIENTE  AS Correo_Cliente,
                     DIRECCION       AS Direccion,
+                    DEPARTAMENTO    AS Departamento,
+                    MUNICIPIO       AS Municipio,
                     OBSERVACIONES   AS Observaciones,
                     TOTAL           AS Total,
                     ESTADO          AS Estado,
                     PDF_URL         AS Pdf_Url,
                     FECHA_CREACION  AS Fecha_Creacion
                 FROM PEDIDOS
-                WHERE ID_PEDIDO = @IdPedido";
+                WHERE ID_PEDIDO = @IdPedido;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             return await connection.QueryFirstOrDefaultAsync<Pedido>(sql, new { IdPedido = idPedido });
         }
 
@@ -181,9 +195,10 @@ namespace TiendaVentas.Web.Services
                     SUBTOTAL        AS Subtotal
                 FROM PEDIDO_DETALLE
                 WHERE ID_PEDIDO = @IdPedido
-                ORDER BY ID_DETALLE";
+                ORDER BY ID_DETALLE;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             var resultado = await connection.QueryAsync<PedidoDetalle>(sql, new { IdPedido = idPedido });
             return resultado.ToList();
         }
@@ -193,9 +208,10 @@ namespace TiendaVentas.Web.Services
             const string sql = @"
                 UPDATE PEDIDOS
                 SET ESTADO = @Estado
-                WHERE ID_PEDIDO = @IdPedido";
+                WHERE ID_PEDIDO = @IdPedido;";
 
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString);
+
             await connection.ExecuteAsync(sql, new
             {
                 Estado = estado,

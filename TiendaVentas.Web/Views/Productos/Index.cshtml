@@ -6,21 +6,20 @@
 
     var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
     int? idCategoriaSeleccionada = ViewBag.IdCategoria as int?;
+    string? texto = ViewBag.Texto as string;
 }
 
 <div class="container py-5 mb-5 pb-5">
 
-    <!-- 🔝 Título -->
     <div class="text-center mb-5">
         <h1 class="fw-bold">Nuestros Productos</h1>
         <p class="text-muted">Encuentra los productos ideales para tu negocio o uso personal.</p>
     </div>
 
-    <!-- 🧩 Filtro de categorías -->
     <div class="mb-4 d-flex flex-wrap gap-2 justify-content-center">
-
         <a asp-controller="Productos"
                asp-action="Index"
+               asp-route-texto="@texto"
                class="btn @(idCategoriaSeleccionada == null ? "btn-dark" : "btn-outline-dark") rounded-pill px-3">
             Todas
         </a>
@@ -30,40 +29,45 @@
             <a asp-controller="Productos"
                    asp-action="Index"
                    asp-route-idCategoria="@categoria.Id_Categoria"
+                   asp-route-texto="@texto"
                    class="btn @(idCategoriaSeleccionada == categoria.Id_Categoria ? "btn-dark" : "btn-outline-dark") rounded-pill px-3">
                 @categoria.Nombre
             </a>
         }
     </div>
 
-    <!-- 🛍️ Productos -->
     <div class="row g-4">
-
         @if (Model != null && Model.Any())
         {
             @foreach (var item in Model)
             {
+                var codigo = string.IsNullOrWhiteSpace(item.Codigo_Producto)
+                    ? item.Id_Producto.ToString()
+                    : item.Codigo_Producto;
+
                 <div class="col-md-6 col-lg-3">
-                    <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card product-card h-100">
 
-                        <!-- 🖼️ Imagen -->
-                        <img src="@(string.IsNullOrWhiteSpace(item.Imagen_Url) ? "/images/no-image.png" : item.Imagen_Url)"
-                             class="card-img-top rounded-top-4"
-                             alt="@item.Nombre"
-                             style="height: 220px; object-fit: cover;" />
+                        <a asp-controller="Productos"
+                               asp-action="Detalle"
+                               asp-route-id="@item.Id_Producto"
+                               class="product-img-link">
 
-                        <!-- 📦 Contenido -->
+                            <img src="@(string.IsNullOrWhiteSpace(item.Imagen_Url) ? "/images/no-image.png" : item.Imagen_Url)"
+                                 class="product-img"
+                                 alt="@item.Nombre" />
+                        </a>
+
                         <div class="card-body d-flex flex-column p-4">
 
-                            <span class="text-muted small">@item.Categoria</span>
+                            <span class="product-category">@item.Categoria</span>
 
-                            <h5 class="card-title mt-2 mb-2">@item.Nombre</h5>
+                            <div class="small text-muted mt-1 mb-2">
+                                Código: <strong>@codigo</strong>
+                            </div>
 
-                            <p class="card-text text-muted small mb-3">
-                                @(string.IsNullOrWhiteSpace(item.Descripcion) ? "Sin descripción disponible." : item.Descripcion)
-                            </p>
+                            <h5 class="product-name mt-2 mb-2">@item.Nombre</h5>
 
-                            <!-- ✅ Estado -->
                             <div class="mb-3">
                                 @if (item.Stock > 0)
                                 {
@@ -79,28 +83,23 @@
                                 }
                             </div>
 
-                            <!-- 💰 Precio + Botones -->
                             <div class="mt-auto pt-2">
-
-                                <h4 class="fw-bold mb-3 text-dark">
+                                <h4 class="product-price mb-3">
                                     Q @item.Precio.ToString("N2")
                                 </h4>
 
                                 <div class="d-grid gap-2">
-
                                     @if (item.Stock > 0)
                                     {
-                                        <!-- 🛒 Agregar al carrito -->
                                         <form asp-controller="Carrito" asp-action="Agregar" method="post">
                                             <input type="hidden" name="idProducto" value="@item.Id_Producto" />
                                             <input type="hidden" name="cantidad" value="1" />
 
-                                            <button type="submit" class="btn btn-warning rounded-pill fw-semibold">
+                                            <button type="submit" class="btn btn-warning rounded-pill fw-semibold w-100">
                                                 Agregar al carrito
                                             </button>
                                         </form>
 
-                                        <!-- 🔍 Ver detalle -->
                                         <a asp-controller="Productos"
                                                asp-action="Detalle"
                                                asp-route-id="@item.Id_Producto"
@@ -121,9 +120,7 @@
                                             Ver detalle
                                         </a>
                                     }
-
                                 </div>
-
                             </div>
 
                         </div>
@@ -133,7 +130,6 @@
         }
         else
         {
-            <!-- ⚠️ Sin productos -->
             <div class="col-12">
                 <div class="alert alert-warning text-center rounded-4 py-4">
                     <h5 class="mb-2">No hay productos disponibles</h5>
@@ -141,7 +137,5 @@
                 </div>
             </div>
         }
-
     </div>
-
 </div>

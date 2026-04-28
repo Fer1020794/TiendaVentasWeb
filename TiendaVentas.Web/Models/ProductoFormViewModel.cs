@@ -10,6 +10,9 @@ namespace TiendaVentas.Web.Models
         [Required]
         public int Id_Categoria { get; set; }
 
+       
+        public string? Codigo_Producto { get; set; }
+
         [Required]
         public string Nombre { get; set; } = string.Empty;
 

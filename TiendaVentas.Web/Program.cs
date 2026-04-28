@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+// Servicios de la aplicación
 builder.Services.AddScoped<ProductoService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<PedidoService>();
@@ -13,7 +14,7 @@ builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<AdminAuthService>();
 builder.Services.AddScoped<BannerService>();
 
-
+// Sesión / carrito
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -22,6 +23,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// QuestPDF
 QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
