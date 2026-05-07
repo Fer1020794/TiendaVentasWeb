@@ -18,6 +18,7 @@ namespace TiendaVentas.Web.Controllers
         public IActionResult Index()
         {
             var carrito = ObtenerCarrito();
+
             var vm = new CarritoViewModel
             {
                 Items = carrito
@@ -29,9 +30,11 @@ namespace TiendaVentas.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Agregar(int idProducto, int cantidad = 1)
         {
-            if (cantidad <= 0) cantidad = 1;
+            if (cantidad <= 0)
+                cantidad = 1;
 
             var producto = await _productoService.ObtenerProductoPorIdAsync(idProducto);
+
             if (producto == null)
                 return NotFound();
 
@@ -89,10 +92,26 @@ namespace TiendaVentas.Web.Controllers
                 item.Cantidad--;
 
                 if (item.Cantidad <= 0)
-                {
                     carrito.Remove(item);
-                }
 
+                GuardarCarrito(carrito);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarCantidad(int idProducto, int cantidad)
+        {
+            if (cantidad <= 0)
+                cantidad = 1;
+
+            var carrito = ObtenerCarrito();
+            var item = carrito.FirstOrDefault(x => x.Id_Producto == idProducto);
+
+            if (item != null)
+            {
+                item.Cantidad = cantidad;
                 GuardarCarrito(carrito);
             }
 
