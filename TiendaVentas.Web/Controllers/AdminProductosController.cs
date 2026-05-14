@@ -20,12 +20,15 @@ namespace TiendaVentas.Web.Controllers
             _env = env;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? texto)
         {
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
                 return RedirectToAction("Login", "AdminAuth");
 
-            var productos = await _productoService.ObtenerTodosAdminAsync();
+            var productos = await _productoService.ObtenerTodosAdminAsync(texto);
+
+            ViewBag.Texto = texto;
+
             return View(productos);
         }
 
@@ -45,6 +48,7 @@ namespace TiendaVentas.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductoFormViewModel model)
         {
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
@@ -110,6 +114,7 @@ namespace TiendaVentas.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProductoFormViewModel model)
         {
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")
@@ -147,6 +152,7 @@ namespace TiendaVentas.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Desactivar(int id)
         {
             if (HttpContext.Session.GetString("ADMIN_LOGUEADO") != "SI")

@@ -104,27 +104,40 @@ namespace TiendaVentas.Web.Services
             return await connection.QueryFirstOrDefaultAsync<Producto>(sql, new { Id = id });
         }
 
-        public async Task<List<Producto>> ObtenerTodosAdminAsync()
+        public async Task<List<Producto>> ObtenerTodosAdminAsync(string? texto = null)
         {
             const string sql = @"
-                SELECT
-                    P.ID_PRODUCTO      AS Id_Producto,
-                    P.ID_CATEGORIA     AS Id_Categoria,
-                    P.CODIGO_PRODUCTO  AS Codigo_Producto,
-                    P.NOMBRE           AS Nombre,
-                    P.DESCRIPCION      AS Descripcion,
-                    P.PRECIO           AS Precio,
-                    P.STOCK            AS Stock,
-                    P.IMAGEN_URL       AS Imagen_Url,
-                    P.ESTADO           AS Estado,
-                    C.NOMBRE           AS Categoria
-                FROM PRODUCTOS P
-                INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
-                ORDER BY P.ID_PRODUCTO DESC;";
+        SELECT
+            P.ID_PRODUCTO      AS Id_Producto,
+            P.ID_CATEGORIA     AS Id_Categoria,
+            P.CODIGO_PRODUCTO  AS Codigo_Producto,
+            P.NOMBRE           AS Nombre,
+            P.DESCRIPCION      AS Descripcion,
+            P.PRECIO           AS Precio,
+            P.STOCK            AS Stock,
+            P.IMAGEN_URL       AS Imagen_Url,
+            P.ESTADO           AS Estado,
+            C.NOMBRE           AS Categoria
+        FROM PRODUCTOS P
+        INNER JOIN CATEGORIAS C ON C.ID_CATEGORIA = P.ID_CATEGORIA
+        WHERE
+        (
+            @Texto IS NULL
+            OR @Texto = ''
+            OR P.CODIGO_PRODUCTO LIKE CONCAT('%', @Texto, '%')
+            OR P.NOMBRE LIKE CONCAT('%', @Texto, '%')
+            OR P.DESCRIPCION LIKE CONCAT('%', @Texto, '%')
+            OR C.NOMBRE LIKE CONCAT('%', @Texto, '%')
+        )
+        ORDER BY P.ID_PRODUCTO DESC;";
 
             using var connection = new MySqlConnection(_connectionString);
 
-            var resultado = await connection.QueryAsync<Producto>(sql);
+            var resultado = await connection.QueryAsync<Producto>(sql, new
+            {
+                Texto = texto?.Trim()
+            });
+
             return resultado.ToList();
         }
 
