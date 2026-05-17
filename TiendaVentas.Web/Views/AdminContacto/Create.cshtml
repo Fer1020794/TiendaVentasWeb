@@ -1,0 +1,138 @@
+﻿@model TiendaVentas.Web.Models.ContactoImagen
+
+@{
+    ViewData["Title"] = "Nueva Imagen de Contacto";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+
+            <h1 class="fw-bold mb-1">
+                Nueva Imagen de Contacto
+            </h1>
+
+            <p class="text-muted mb-0">
+                Agrega una nueva imagen para la página de contacto.
+            </p>
+
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+
+            <a asp-controller="AdminContacto"
+               asp-action="Index"
+               class="btn btn-outline-secondary rounded-pill">
+
+                Volver
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow rounded-4">
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="All"
+                     class="alert alert-danger rounded-4">
+                </div>
+
+                <div class="row g-4">
+
+                 
+                    <div class="col-md-8">
+
+                        <label class="form-label fw-semibold">
+                            Título
+                        </label>
+
+                        <input asp-for="Titulo"
+                               class="form-control rounded-4"
+                               placeholder="Ejemplo: Contáctanos por WhatsApp" />
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+                            Estado
+                        </label>
+
+                        <select asp-for="Estado"
+                                class="form-select rounded-4">
+
+                            <option value="A">
+                                Activa
+                            </option>
+
+                            <option value="I">
+                                Inactiva
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+                            Imagen
+                        </label>
+
+                        <input type="file"
+                               name="imagen"
+                               class="form-control rounded-4"
+                               accept=".jpg,.jpeg,.png,.webp"
+                               required />
+
+                        <small class="text-muted">
+                            Formatos permitidos: JPG, JPEG, PNG y WEBP.
+                        </small>
+
+                    </div>
+
+                </div>
+
+           
+                <div class="d-flex gap-2 mt-4 flex-wrap">
+
+                    <button type="submit"
+                            class="btn btn-dark rounded-pill px-4">
+
+                        Guardar imagen
+
+                    </button>
+
+                    <a asp-controller="AdminContacto"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary rounded-pill px-4">
+
+                        Cancelar
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

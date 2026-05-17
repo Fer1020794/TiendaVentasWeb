@@ -1,0 +1,83 @@
+﻿@model List<TiendaVentas.Web.Models.ContactoImagen>
+
+@{
+    ViewData["Title"] = "Contacto";
+}
+
+<div class="container py-5">
+
+  
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold display-5">
+            Contáctanos
+        </h1>
+
+        <p class="text-muted fs-5">
+
+            Estamos para ayudarte. Puedes comunicarte con MC Nails Guatemala
+            por nuestras redes sociales o WhatsApp.
+
+        </p>
+
+    </div>
+
+  
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4 justify-content-center">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-10">
+
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                        <img src="@item.Imagen_Url"
+                             alt="@item.Titulo"
+                             class="img-fluid w-100"
+                             style="
+                        max-height:700px;
+                        object-fit:cover;" />
+
+                        @if (!string.IsNullOrWhiteSpace(item.Titulo))
+                        {
+                            <div class="card-body text-center py-4">
+
+                                <h3 class="fw-bold mb-0">
+                                    @item.Titulo
+                                </h3>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning rounded-4 text-center">
+
+            No hay información de contacto disponible.
+
+        </div>
+    }
+
+    <div class="text-center mt-5">
+
+        <a href="https://wa.me/50254001440"
+           target="_blank"
+           class="btn btn-success btn-lg rounded-pill px-5 shadow">
+
+            <i class="bi bi-whatsapp"></i>
+            Escribir por WhatsApp
+
+        </a>
+
+    </div>
+
+</div>

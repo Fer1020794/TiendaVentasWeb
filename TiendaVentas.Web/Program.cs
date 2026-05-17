@@ -13,6 +13,7 @@ builder.Services.AddScoped<PedidoPdfService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<AdminAuthService>();
 builder.Services.AddScoped<BannerService>();
+builder.Services.AddScoped<ContactoImagenService>();
 
 // Sesión / carrito
 builder.Services.AddDistributedMemoryCache();
