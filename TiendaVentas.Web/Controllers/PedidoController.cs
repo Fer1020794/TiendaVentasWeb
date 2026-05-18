@@ -53,7 +53,7 @@ namespace TiendaVentas.Web.Controllers
             if (pedido == null)
                 return NotFound();
 
-            ViewBag.TelefonoWhatsApp = _configuration["EmpresaSettings:TelefonoWhatsApp"] ?? "50254001440";
+            ViewBag.TelefonoWhatsApp = _configuration["EmpresaSettings:TelefonoWhatsApp"] ?? "50234375198";
             return View(pedido);
         }
 

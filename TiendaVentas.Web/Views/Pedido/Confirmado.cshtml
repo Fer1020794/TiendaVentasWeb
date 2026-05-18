@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Pedido Confirmado";
 
-    var telefonoWhatsApp = ViewBag.TelefonoWhatsApp?.ToString() ?? "50254001440";
+    var telefonoWhatsApp = ViewBag.TelefonoWhatsApp?.ToString() ?? "50234375198";
     var mensaje = $"Hola, he realizado el pedido No. {Model.Id_Pedido:D6} en MC Nails. Quedo atento(a) a la confirmación.";
     var whatsappUrl = $"https://wa.me/{telefonoWhatsApp}?text={Uri.EscapeDataString(mensaje)}";
 }
