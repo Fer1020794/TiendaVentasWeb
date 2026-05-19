@@ -6,7 +6,7 @@
 
     <title>@ViewData["Title"] - MC Nails Guatemala</title>
 
-    <!-- FAVICON -->
+  
     <link rel="icon"
           type="image/jpg"
           href="~/images/logo-mc-nails.jpg" />
@@ -28,14 +28,14 @@
 
 <body>
 
-    <!-- HEADER -->
+   
     <header class="top-store-header">
 
         <div class="container py-2">
 
             <div class="row align-items-center g-3">
 
-                <!-- LOGO -->
+          
                 <div class="col-lg-3">
 
                     <a class="d-flex align-items-center gap-3 text-decoration-none"
@@ -62,7 +62,7 @@
 
                 </div>
 
-                <!-- BUSCADOR -->
+             
                 <div class="col-lg-6">
 
                     <form asp-controller="Productos"
@@ -88,7 +88,7 @@
 
                 </div>
 
-                <!-- CARRITO -->
+               
                 <div class="col-lg-3 d-flex justify-content-lg-end">
 
                     @await Component.InvokeAsync("CarritoResumen")
@@ -97,7 +97,7 @@
 
             </div>
 
-            <!-- MENU -->
+            
             <nav class="navbar navbar-expand-lg navbar-light mt-2">
 
                 <button class="navbar-toggler"
@@ -117,7 +117,7 @@
 
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-4">
 
-                        <!-- INICIO -->
+                      
                         <li class="nav-item">
 
                             <a class="nav-link text-dark"
@@ -130,7 +130,7 @@
 
                         </li>
 
-                        <!-- PRODUCTOS -->
+                      
                         <li class="nav-item">
 
                             <a class="nav-link text-dark"
@@ -143,7 +143,6 @@
 
                         </li>
 
-                        <!-- CONTACTO -->
                         <li class="nav-item">
 
                             <a class="nav-link text-dark"
@@ -158,7 +157,7 @@
 
                     </ul>
 
-                    <!-- BOTONES DERECHA -->
+                   
                     <div class="d-flex align-items-center flex-wrap gap-2">
 
                         @if (Context.Session.GetString("ADMIN_LOGUEADO") == "SI")
@@ -218,7 +217,7 @@
 
     </header>
 
-    
+   
     <main class="main-container">
 
         <div class="container py-4">
@@ -229,7 +228,7 @@
 
     </main>
 
-    
+  
     <footer class="site-footer text-muted">
 
         <div class="container text-center py-4">
@@ -279,7 +278,7 @@
 
     </footer>
 
-   
+    
     <div class="mc-whatsapp-widget"
          id="whatsappWidget">
 
@@ -376,7 +375,7 @@
         </div>
     }
 
-   
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -401,13 +400,6 @@
             var whatsappWidget = document.getElementById("whatsappWidget");
             var whatsappCloseButton = document.getElementById("whatsappCloseButton");
 
-            if (localStorage.getItem("mcWhatsappHidden") === "true") {
-
-                if (whatsappWidget) {
-                    whatsappWidget.style.display = "none";
-                }
-            }
-
             if (whatsappCloseButton) {
 
                 whatsappCloseButton.addEventListener("click", function () {
@@ -416,7 +408,6 @@
 
                         whatsappWidget.style.display = "none";
 
-                        localStorage.setItem("mcWhatsappHidden", "true");
                     }
 
                 });
